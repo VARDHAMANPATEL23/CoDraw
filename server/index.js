@@ -1,4 +1,6 @@
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
+
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -14,7 +16,7 @@ app.use(cors());
 app.use(express.json());
 
 // Connect to MongoDB
-mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 5000 })
+mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 10000 })
   .then(() => console.log('Connected to MongoDB successfully'))
   .catch((err) => console.warn('MongoDB connection notice:', err.message));
 
