@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 # CoDraw Application Launcher & Health Monitor (Linux/macOS)
+# Uses Bun for faster startup and dependency resolution.
 
 echo "========================================="
-echo " Starting CoDraw Application Suite"
+echo " Starting CoDraw Application Suite (Bun)"
 echo "========================================="
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$PROJECT_DIR" || exit 1
 
-# Cleanup function on Ctrl+C or exit
 cleanup() {
   echo ""
   echo "Shutting down CoDraw processes..."
@@ -19,12 +19,12 @@ trap cleanup SIGINT SIGTERM EXIT
 
 # Start Server
 echo "[1/2] Starting Express Backend Server on port 5000..."
-npm run start:server &
+cd "$PROJECT_DIR/server" && bun run index.js &
 SERVER_PID=$!
 
 # Start Client
 echo "[2/2] Starting React Client Builder on port 3000..."
-npm run start:client &
+cd "$PROJECT_DIR/client" && bun run start &
 CLIENT_PID=$!
 
 echo ""
@@ -35,15 +35,11 @@ echo ""
 echo "Monitoring services (Press Ctrl+C to stop all)..."
 echo "-----------------------------------------"
 
-# Monitoring Loop
 while true; do
   sleep 5
   TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S")
 
-  # Check Server Health
   SERVER_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5000/api/health || echo "DOWN")
-  
-  # Check Client Health
   CLIENT_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000 || echo "DOWN")
 
   echo "[$TIMESTAMP] Status Check:"

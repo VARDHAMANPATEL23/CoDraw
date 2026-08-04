@@ -1,17 +1,17 @@
 @echo off
-TITLE CoDraw Application Suite Launcher & Monitor
+TITLE CoDraw Application Suite Launcher & Monitor (Bun)
 
 echo =========================================
-echo  Starting CoDraw Application Suite (Windows)
+echo  Starting CoDraw Application Suite (Bun)
 echo =========================================
 
 REM Start Express API server in new cmd window
 echo [1/2] Launching Express API Server on port 5000...
-start "CoDraw Server (Port 5000)" cmd /k "cd /d %~dp0 && npm run start:server"
+start "CoDraw Server (Port 5000)" cmd /k "cd /d %~dp0\server && bun run index.js"
 
 REM Start React Client in new cmd window
 echo [2/2] Launching React Client Builder on port 3000...
-start "CoDraw Client (Port 3000)" cmd /k "cd /d %~dp0 && npm run start:client"
+start "CoDraw Client (Port 3000)" cmd /k "cd /d %~dp0\client && bun run start"
 
 echo.
 echo Both services have been launched in separate windows.

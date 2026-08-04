@@ -18,7 +18,7 @@ export const useCanvasStore = create((set, get) => ({
   selectedId: null,
   past: [],
   future: [],
-  zoomLevel: 85,
+  zoomLevel: 70,
   showGrid: true,
 
   recordHistory: () => {
@@ -37,7 +37,7 @@ export const useCanvasStore = create((set, get) => ({
   setZoomLevel: (zoom) => set({ zoomLevel: Math.min(Math.max(zoom, 30), 200) }),
   zoomIn: () => set((state) => ({ zoomLevel: Math.min(state.zoomLevel + 10, 200) })),
   zoomOut: () => set((state) => ({ zoomLevel: Math.max(state.zoomLevel - 10, 30) })),
-  resetZoom: () => set({ zoomLevel: 85 }),
+  resetZoom: () => set({ zoomLevel: 70 }),
   toggleGrid: () => set((state) => ({ showGrid: !state.showGrid })),
 
   addComponent: (component) => set((state) => {

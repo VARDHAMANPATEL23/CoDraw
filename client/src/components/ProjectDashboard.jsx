@@ -82,7 +82,7 @@ export default function ProjectDashboard({ onOpenProject, onNewProjectClick }) {
               <div className="flex items-center space-x-3 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg text-xs">
                 <span className="text-slate-300 font-medium">{user?.email}</span>
                 <button
-                  onClick={logout}
+                  onClick={async () => { await logout(); window.location.reload(); }}
                   className="text-red-400 hover:text-red-300 font-bold"
                 >
                   Logout
@@ -97,12 +97,6 @@ export default function ProjectDashboard({ onOpenProject, onNewProjectClick }) {
               </button>
             )}
 
-            <button
-              onClick={onNewProjectClick}
-              className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm px-5 py-2.5 rounded-xl shadow-lg transition-all flex items-center space-x-2"
-            >
-              <span>+ New Project</span>
-            </button>
           </div>
         </header>
 

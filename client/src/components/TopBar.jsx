@@ -93,7 +93,7 @@ export default function TopBar({ onBackToDashboard }) {
             <div className="flex items-center space-x-2 bg-slate-800 border border-slate-700 px-2.5 py-1 rounded text-slate-300">
               <span className="text-[11px] font-medium text-slate-300">{user?.email}</span>
               <button
-                onClick={logout}
+                onClick={async () => { await logout(); onBackToDashboard(); }}
                 className="text-[10px] text-red-400 hover:text-red-300 font-bold ml-1"
               >
                 Logout

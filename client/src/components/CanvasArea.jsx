@@ -184,13 +184,37 @@ function RenderComponentNode({ comp, index, totalComponents }) {
     }
   };
 
+  const getAdvancedStyles = () => {
+    const s = {};
+    if (props.advancedWidth) s.width = props.advancedWidth;
+    if (props.advancedHeight) s.height = props.advancedHeight;
+    if (props.advancedPadding) s.padding = props.advancedPadding;
+    if (props.advancedMargin) s.margin = props.advancedMargin;
+    if (props.advancedBorderRadius) s.borderRadius = props.advancedBorderRadius;
+    if (props.advancedPosition) s.position = props.advancedPosition;
+    if (props.advancedZIndex) s.zIndex = props.advancedZIndex;
+    
+    if (props.advancedTopBottom) {
+      const parts = props.advancedTopBottom.split(':').map(x => x.trim());
+      if (parts.length === 2) s[parts[0]] = parts[1];
+    }
+    if (props.advancedLeftRight) {
+      const parts = props.advancedLeftRight.split(':').map(x => x.trim());
+      if (parts.length === 2) s[parts[0]] = parts[1];
+    }
+    return s;
+  };
+
   return (
     <div
       onClick={(e) => {
         e.stopPropagation();
         setSelectedId(comp.id);
       }}
-      className={`group relative w-full cursor-pointer transition-all border ${
+      style={getAdvancedStyles()}
+      className={`group relative cursor-pointer transition-all border ${
+        !props.advancedWidth && !props.advancedPosition ? 'w-full' : ''
+      } ${
         isSelected ? 'ring-2 ring-indigo-500 border-indigo-500 z-10' : 'border-transparent hover:border-slate-700'
       }`}
     >
@@ -265,20 +289,23 @@ export default function CanvasArea() {
       onWheel={handleWheel}
       className="flex-1 bg-slate-950 flex flex-col items-center justify-start p-6 overflow-auto relative select-none"
     >
+      {/* Layout-preserving wrapper */}
       <div
         style={{
-          transform: `scale(${zoomLevel / 100})`,
-          transformOrigin: 'top center',
-          transition: 'transform 0.1s ease-out',
+          width: `${1440 * (zoomLevel / 100)}px`,
+          height: `${900 * (zoomLevel / 100)}px`,
+          transition: 'width 0.1s ease-out, height 0.1s ease-out',
         }}
-        className="my-4"
+        className="my-4 relative shrink-0"
       >
         <div
           ref={setNodeRef}
-          className={`w-[1440px] min-h-[900px] bg-slate-900 border rounded-lg shadow-2xl relative flex flex-col ${
+          className={`w-[1440px] min-h-[900px] bg-slate-900 border rounded-lg shadow-2xl relative flex flex-col origin-top-left ${
             isOver ? 'border-indigo-500 ring-2 ring-indigo-500/50' : 'border-slate-800'
           }`}
           style={{
+            transform: `scale(${zoomLevel / 100})`,
+            transition: 'transform 0.1s ease-out',
             backgroundImage: showGrid
               ? 'radial-gradient(circle, #334155 1px, transparent 1px)'
               : 'none',

@@ -7,7 +7,7 @@
     "server"
   ],
   "scripts": {
-    "start:client": "npm start --workspace=client",
-    "start:server": "npm start --workspace=server"
+    "start:client": "cd client && bun run start",
+    "start:server": "cd server && bun run start"
   }
 }

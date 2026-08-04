@@ -153,6 +153,119 @@ export default function RightPanel() {
               );
             })}
           </div>
+
+          <div className="mt-8 pt-4 border-t border-slate-800">
+            <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Advanced Styling</h4>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <label className="block text-[10px] font-medium text-slate-400">Width</label>
+                  <input
+                    type="text"
+                    value={selectedComponent.props.advancedWidth || ''}
+                    onChange={(e) => handlePropChange('advancedWidth', e.target.value)}
+                    placeholder="e.g. 100%, 500px"
+                    className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="block text-[10px] font-medium text-slate-400">Height</label>
+                  <input
+                    type="text"
+                    value={selectedComponent.props.advancedHeight || ''}
+                    onChange={(e) => handlePropChange('advancedHeight', e.target.value)}
+                    placeholder="e.g. auto, 300px"
+                    className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <label className="block text-[10px] font-medium text-slate-400">Margin</label>
+                  <input
+                    type="text"
+                    value={selectedComponent.props.advancedMargin || ''}
+                    onChange={(e) => handlePropChange('advancedMargin', e.target.value)}
+                    placeholder="e.g. 10px 20px"
+                    className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="block text-[10px] font-medium text-slate-400">Padding</label>
+                  <input
+                    type="text"
+                    value={selectedComponent.props.advancedPadding || ''}
+                    onChange={(e) => handlePropChange('advancedPadding', e.target.value)}
+                    placeholder="e.g. 2rem"
+                    className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="block text-[10px] font-medium text-slate-400">Border Radius (Corner Type)</label>
+                <input
+                  type="text"
+                  value={selectedComponent.props.advancedBorderRadius || ''}
+                  onChange={(e) => handlePropChange('advancedBorderRadius', e.target.value)}
+                  placeholder="e.g. 8px, 50%"
+                  className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="block text-[10px] font-medium text-slate-400">Position</label>
+                <select
+                  value={selectedComponent.props.advancedPosition || ''}
+                  onChange={(e) => handlePropChange('advancedPosition', e.target.value)}
+                  className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
+                >
+                  <option value="">Default (Static)</option>
+                  <option value="relative">Relative</option>
+                  <option value="absolute">Absolute</option>
+                  <option value="fixed">Fixed</option>
+                  <option value="sticky">Sticky</option>
+                </select>
+              </div>
+
+              {selectedComponent.props.advancedPosition && selectedComponent.props.advancedPosition !== 'static' && (
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <label className="block text-[10px] font-medium text-slate-400">Top / Bottom</label>
+                    <input
+                      type="text"
+                      value={selectedComponent.props.advancedTopBottom || ''}
+                      onChange={(e) => handlePropChange('advancedTopBottom', e.target.value)}
+                      placeholder="e.g. top: 10px"
+                      className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="block text-[10px] font-medium text-slate-400">Left / Right</label>
+                    <input
+                      type="text"
+                      value={selectedComponent.props.advancedLeftRight || ''}
+                      onChange={(e) => handlePropChange('advancedLeftRight', e.target.value)}
+                      placeholder="e.g. left: 5%"
+                      className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <div className="space-y-1.5">
+                <label className="block text-[10px] font-medium text-slate-400">Z-Index</label>
+                <input
+                  type="number"
+                  value={selectedComponent.props.advancedZIndex || ''}
+                  onChange={(e) => handlePropChange('advancedZIndex', e.target.value ? Number(e.target.value) : '')}
+                  placeholder="e.g. 10"
+                  className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
+                />
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </aside>

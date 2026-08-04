@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { db } from '../db/projectDB';
 
 const API_BASE = 'http://localhost:5000/api';
 
@@ -39,9 +40,20 @@ export const useAuthStore = create((set, get) => ({
     return data.user;
   },
 
-  logout: () => {
+  logout: async () => {
+    // Clear all auth tokens
     localStorage.removeItem('codraw_token');
     localStorage.removeItem('codraw_user');
+    sessionStorage.clear();
+
+    // Clear local project data and sync queue for clean slate
+    try {
+      await db.projects.clear();
+      await db.syncQueue.clear();
+    } catch (err) {
+      console.warn('IndexedDB cleanup error:', err);
+    }
+
     set({ user: null, token: null, isAuthenticated: false });
   },
 }));

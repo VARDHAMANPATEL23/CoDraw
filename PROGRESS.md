@@ -8,9 +8,9 @@
 
 | Field | Value |
 |---|---|
-| **Current Phase** | Phase 5 — Polish & Release |
-| **Last Completed Task** | 4.8 — Load merge: server projects + local IndexedDB (last-write-wins) |
-| **Next Task** | 5.1 — Workbox service worker (app shell caching) |
+| **Current Phase** | Phase 5 — Polish & Release (in progress) |
+| **Last Completed Task** | 5.0-hotfix — URL routing, logout cleanup, advanced styling, zoom fix, bun migration |
+| **Next Task** | 5.1 — Component grouping, user isolation, ZIP import, Blender-style UI redesign |
 | **Blockers** | None |
 | **Human Decisions Pending** | D1, D2, D3, D4, D5 (see AGENTS.md §12) |
 
@@ -20,11 +20,11 @@
 
 | Phase | Name | Status |
 |---|---|---|
-| Phase 1 | Foundation | ✅ Completed |
-| Phase 2 | Core Editor | ✅ Completed |
-| Phase 3 | Export Engine | ✅ Completed |
-| Phase 4 | Auth & Cloud Sync | ✅ Completed |
-| Phase 5 | Polish & Release | 🔲 Not started |
+| Phase 1 | Foundation | Completed |
+| Phase 2 | Core Editor | Completed |
+| Phase 3 | Export Engine | Completed |
+| Phase 4 | Auth & Cloud Sync | Completed |
+| Phase 5 | Polish & Release | In Progress |
 
 ---
 
@@ -100,12 +100,12 @@ Issues found: None.
 
 | Combo | Exports? | `npm install` passes? | `npm start` runs? | Notes |
 |---|---|---|---|---|
-| Tailwind + JS | ✅ | ✅ | ✅ | Standard CRA structure with tailwind directives |
-| Tailwind + TS | ✅ | ✅ | ✅ | Standard CRA structure with TypeScript interfaces |
-| CSS Modules + JS | ✅ | ✅ | ✅ | Scoped `.module.css` imports per component |
-| CSS Modules + TS | ✅ | ✅ | ✅ | Scoped `.module.css` with TSX component templates |
-| Bootstrap + JS | ✅ | ✅ | ✅ | Includes Bootstrap 5 dependency & CSS import |
-| Bootstrap + TS | ✅ | ✅ | ✅ | Includes Bootstrap 5 dependency & TSX templates |
+| Tailwind + JS | Yes | Yes | Yes | Standard CRA structure with tailwind directives |
+| Tailwind + TS | Yes | Yes | Yes | Standard CRA structure with TypeScript interfaces |
+| CSS Modules + JS | Yes | Yes | Yes | Scoped `.module.css` imports per component |
+| CSS Modules + TS | Yes | Yes | Yes | Scoped `.module.css` with TSX component templates |
+| Bootstrap + JS | Yes | Yes | Yes | Includes Bootstrap 5 dependency & CSS import |
+| Bootstrap + TS | Yes | Yes | Yes | Includes Bootstrap 5 dependency & TSX templates |
 
 ### Phase 3 Checkpoint
 
@@ -146,6 +146,7 @@ Issues found: None.
 ## Phase 5 — Polish & Release
 
 ### Task Checklist
+- [x] 5.0-hotfix — Critical bug fixes and UX improvements (see below)
 - [ ] 5.1 — Workbox service worker (app shell caching)
 - [ ] 5.2 — "New update available" banner
 - [ ] 5.3 — Error state audit (all async ops)
@@ -155,6 +156,32 @@ Issues found: None.
 - [ ] 5.7 — Empty states (canvas, dashboard, search)
 - [ ] 5.8 — Production deploy (Vercel + Railway/Render)
 - [ ] 5.9 — Final end-to-end QA on clean machine
+
+### 5.0-hotfix — Critical Bug Fixes & UX Improvements (2026-08-04)
+
+**Fixes applied:**
+
+1. **MongoDB Atlas Connection**: Fixed `dotenv` path resolution in `server/index.js` — was loading `.env` from CWD instead of `server/.env` when started from monorepo root. Explicit `path.join(__dirname, '.env')` resolves the issue.
+
+2. **New Project Modal**: Modal was disconnected from the DOM. Imported `NewProjectModal` into `App.js` and wired `isOpen`/`onProjectCreated` props. Removed duplicate top-right `+ New Project` button from Dashboard (only center button remains).
+
+3. **Canvas Zoom Overflow**: Restructured `CanvasArea.jsx` scaling — wrapped the 1440px canvas inside a dynamically-sized container that tracks scaled dimensions. Eliminates horizontal scrollbar overflow. Default zoom reduced to 70%.
+
+4. **Advanced Styling Panel**: Added "Advanced Styling" section to RightPanel with: Width, Height, Margin, Padding, Border Radius, CSS Position (static/relative/absolute/fixed/sticky), Top/Bottom, Left/Right, and Z-Index. Applied to component wrapper via `getAdvancedStyles()` in `CanvasArea.jsx`.
+
+5. **URL-based Routing**: Installed `react-router-dom`. Routes: `/` (dashboard), `/project/:projectId` (editor). On page refresh the editor hydrates from IndexedDB using the URL project ID. If project not found, redirects to `/`.
+
+6. **Logout Cleanup**: `useAuthStore.logout()` now clears `localStorage` auth keys, `sessionStorage`, and wipes IndexedDB `projects` + `syncQueue` tables. Ensures clean slate for next user session.
+
+7. **Bun Migration**: Replaced all `npm` references with `bun` in `package.json` scripts, `start.sh`, and `start.bat`. Bun v1.3.14 confirmed installed.
+
+### Upcoming Features (Requested, Not Yet Implemented)
+
+| # | Feature | Status |
+|---|---------|--------|
+| A | Component grouping (multi-select, group/ungroup, move as group) | Pending |
+| B | User isolation (users only see own projects) + ZIP import into editor | Pending |
+| C | Blender-style UI redesign | Pending |
 
 ### Cross-Browser QA Results
 > _(Agent: fill in after task 5.5)_
@@ -184,11 +211,12 @@ Known issues deferred to v2:
 
 | ID | Decision | Status | Resolution |
 |---|---|---|---|
-| D1 | App domain / URL | 🔲 Pending | |
-| D2 | Monetization model | 🔲 Pending | |
-| D3 | OAuth provider | 🔲 Pending | |
-| D4 | Open source? | 🔲 Pending | |
-| D5 | Canvas component cap (suggested: 50) | 🔲 Pending | |
+| D1 | App domain / URL | Pending | |
+| D2 | Monetization model | Pending | |
+| D3 | OAuth provider | Pending | |
+| D4 | Open source? | Pending | |
+| D5 | Canvas component cap (suggested: 50) | Pending | |
+| D6 | Runtime: Bun | Resolved | Switched to Bun v1.3.14 for all dev/build/run tasks |
 
 ---
 
@@ -212,7 +240,9 @@ Known issues deferred to v2:
 | Date | Session Summary |
 |---|---|
 | July 2026 | AGENTS.md + PROGRESS.md created. Project not yet started. |
+| 2026-07-25 | Phases 1-4 completed in full. All 23 components, export engine, auth, cloud sync. |
+| 2026-08-04 | MongoDB Atlas connection fixed. New Project modal wired. Canvas zoom fixed. Advanced styling panel added. URL routing with react-router-dom. Logout cleanup. Migrated from npm to bun. |
 
 ---
 
-*PROGRESS.md — CoDraw v1 — Updated by agent on session start/end*
+*PROGRESS.md — CoDraw v1 — Updated by agent on 2026-08-04*
