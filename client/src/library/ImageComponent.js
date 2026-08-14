@@ -3,12 +3,14 @@ export const ImageComponentDef = {
   category: 'Media',
   label: 'Image',
   icon: 'image',
+  styleableElements: ['Wrapper'],
   defaultProps: {
     src: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=800',
     alt: 'Sample Image',
     width: '100%',
     height: 'auto',
     borderRadius: '8px',
+    innerStyles: {},
   },
   propsSchema: [
     { key: 'src', label: 'Image URL', type: 'text' },

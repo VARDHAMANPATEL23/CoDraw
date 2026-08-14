@@ -3,12 +3,14 @@ export const CTABlockDef = {
   category: 'UI Blocks',
   label: 'CTA Block',
   icon: 'megaphone',
+  styleableElements: ['Wrapper', 'Heading', 'Subheading', 'Button'],
   defaultProps: {
     heading: 'Ready to build your next project?',
     subheading: 'Join thousands of creators using CoDraw to build visually.',
     buttonText: 'Start Building Now',
-    backgroundColor: '#312e81',
+    backgroundColor: 'transparent',
     textColor: '#ffffff',
+    innerStyles: {},
   },
   propsSchema: [
     { key: 'heading', label: 'Heading', type: 'text' },
@@ -19,10 +21,10 @@ export const CTABlockDef = {
   ],
   styleMap: {
     tailwind: {
-      wrapper: 'w-full py-12 px-8 rounded-2xl text-center shadow-2xl my-6 flex flex-col items-center justify-center',
-      heading: 'text-2xl font-extrabold mb-2',
-      subheading: 'text-sm text-indigo-200 mb-6 max-w-lg',
-      btn: 'px-6 py-3 bg-white text-indigo-900 font-bold rounded-xl shadow-lg hover:bg-slate-100 transition-all',
+      wrapper: 'w-full py-16 px-8 rounded-3xl text-center shadow-2xl my-10 flex flex-col items-center justify-center bg-gradient-to-br from-indigo-900 to-purple-900 border border-white/10 relative overflow-hidden',
+      heading: 'text-4xl font-extrabold mb-4 tracking-tight drop-shadow-md',
+      subheading: 'text-lg text-indigo-200 mb-8 max-w-xl leading-relaxed',
+      btn: 'px-8 py-4 bg-white text-indigo-950 font-black rounded-xl shadow-xl hover:shadow-2xl hover:-translate-y-1 hover:bg-slate-50 transition-all cursor-pointer',
     },
     'css-modules': { wrapper: 'cta__wrapper', heading: 'cta__heading', subheading: 'cta__subheading', btn: 'cta__btn' },
     bootstrap: { wrapper: 'p-5 rounded text-center my-4', heading: 'h2', subheading: 'lead', btn: 'btn btn-light' },
@@ -31,12 +33,13 @@ export const CTABlockDef = {
     js: `import React from 'react';
 {{CSS_IMPORT}}
 
-export default function CTABlock({ heading, subheading, buttonText, backgroundColor, textColor }) {
+export default function CTABlock({ heading, subheading, buttonText, backgroundColor, textColor, innerStyles = {} }) {
+  const getInnerStyle = (elName) => innerStyles[elName] || {};
   return (
-    <div className="{{WRAPPER_CLASS}}" style={{ backgroundColor, color: textColor }}>
-      <h2 className="{{HEADING_CLASS}}">{heading}</h2>
-      <p className="{{SUBHEADING_CLASS}}">{subheading}</p>
-      <button className="{{BTN_CLASS}}">{buttonText}</button>
+    <div className="{{WRAPPER_CLASS}}" style={{ backgroundColor, color: textColor, ...getInnerStyle('Wrapper') }}>
+      <h2 className="{{HEADING_CLASS}}" style={getInnerStyle('Heading')}>{heading}</h2>
+      <p className="{{SUBHEADING_CLASS}}" style={getInnerStyle('Subheading')}>{subheading}</p>
+      <button className="{{BTN_CLASS}}" style={getInnerStyle('Button')}>{buttonText}</button>
     </div>
   );
 }`,
@@ -49,14 +52,16 @@ interface CTABlockProps {
   buttonText: string;
   backgroundColor?: string;
   textColor?: string;
+  innerStyles?: Record<string, React.CSSProperties>;
 }
 
-export default function CTABlock({ heading, subheading, buttonText, backgroundColor, textColor }: CTABlockProps) {
+export default function CTABlock({ heading, subheading, buttonText, backgroundColor, textColor, innerStyles = {} }: CTABlockProps) {
+  const getInnerStyle = (elName: string) => innerStyles[elName] || {};
   return (
-    <div className="{{WRAPPER_CLASS}}" style={{ backgroundColor, color: textColor }}>
-      <h2 className="{{HEADING_CLASS}}">{heading}</h2>
-      <p className="{{SUBHEADING_CLASS}}">{subheading}</p>
-      <button className="{{BTN_CLASS}}">{buttonText}</button>
+    <div className="{{WRAPPER_CLASS}}" style={{ backgroundColor, color: textColor, ...getInnerStyle('Wrapper') }}>
+      <h2 className="{{HEADING_CLASS}}" style={getInnerStyle('Heading')}>{heading}</h2>
+      <p className="{{SUBHEADING_CLASS}}" style={getInnerStyle('Subheading')}>{subheading}</p>
+      <button className="{{BTN_CLASS}}" style={getInnerStyle('Button')}>{buttonText}</button>
     </div>
   );
 }`,

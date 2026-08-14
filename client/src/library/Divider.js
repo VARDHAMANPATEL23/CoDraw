@@ -3,9 +3,11 @@ export const DividerDef = {
   category: 'Layout',
   label: 'Divider',
   icon: 'minus-line',
+  styleableElements: ['Wrapper'],
   defaultProps: {
     color: '#334155',
     margin: '1.5rem 0',
+    innerStyles: {},
   },
   propsSchema: [
     { key: 'color', label: 'Color', type: 'color' },

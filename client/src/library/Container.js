@@ -3,9 +3,11 @@ export const ContainerDef = {
   category: 'Layout',
   label: 'Container',
   icon: 'box-container',
+  styleableElements: ['Wrapper'],
   defaultProps: {
     maxWidth: '1200px',
     padding: '1rem',
+    innerStyles: {},
   },
   propsSchema: [
     { key: 'maxWidth', label: 'Max Width', type: 'text' },

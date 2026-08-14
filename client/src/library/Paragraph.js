@@ -3,10 +3,12 @@ export const ParagraphDef = {
   category: 'Typography',
   label: 'Paragraph',
   icon: 'text-paragraph',
+  styleableElements: ['Wrapper'],
   defaultProps: {
     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
     fontSize: '16px',
     textColor: '#cbd5e1',
+    innerStyles: {},
   },
   propsSchema: [
     { key: 'content', label: 'Content Text', type: 'text' },

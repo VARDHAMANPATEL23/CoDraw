@@ -3,10 +3,12 @@ export const RadioDef = {
   category: 'Forms & Input',
   label: 'Radio',
   icon: 'disc-radio',
+  styleableElements: ['Wrapper'],
   defaultProps: {
     label: 'Radio Option',
     name: 'radioGroup',
     value: 'opt1',
+    innerStyles: {},
   },
   propsSchema: [
     { key: 'label', label: 'Label', type: 'text' },

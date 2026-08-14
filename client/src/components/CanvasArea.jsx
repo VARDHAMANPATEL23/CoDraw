@@ -38,20 +38,22 @@ function RenderComponentNode({ comp, index, totalComponents }) {
       case 'Spacer':
         return <div className="w-full bg-indigo-500/10 border border-indigo-500/20 my-2 rounded flex items-center justify-center text-[10px] text-indigo-400 font-mono" style={{ height: props.height || '32px' }}>Spacer ({props.height || '32px'})</div>;
       case 'Navbar':
+        const getNavStyle = (elName) => (props.innerStyles && props.innerStyles[elName]) || {};
         return (
-          <nav className="flex items-center justify-between px-6 py-4 w-full shadow-md" style={{ backgroundColor: props.backgroundColor, color: props.textColor }}>
-            <span className="text-xl font-bold tracking-tight">{props.brand}</span>
-            <ul className="flex space-x-6 list-none m-0 p-0">
+          <nav className="flex items-center justify-between px-8 py-5 w-full bg-slate-900/80 backdrop-blur-md border-b border-white/5 sticky top-0 z-50" style={{ backgroundColor: props.backgroundColor, color: props.textColor, ...getNavStyle('Wrapper') }}>
+            <span className="text-2xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-cyan-400" style={getNavStyle('Brand')}>{props.brand}</span>
+            <ul className="flex items-center gap-8 list-none m-0 p-0" style={getNavStyle('LinkList')}>
               {(props.links || []).map((link, i) => (
-                <li key={i}><span className="text-sm font-medium hover:opacity-80" style={{ color: props.textColor }}>{link}</span></li>
+                <li key={i}><span className="text-sm font-semibold text-slate-300 hover:text-white transition-colors cursor-pointer" style={{ color: props.textColor, ...getNavStyle('Link') }}>{link}</span></li>
               ))}
             </ul>
           </nav>
         );
       case 'Footer':
+        const getFooterStyle = (elName) => (props.innerStyles && props.innerStyles[elName]) || {};
         return (
-          <footer className="w-full py-6 px-6 text-center border-t border-slate-800" style={{ backgroundColor: props.backgroundColor, color: props.textColor }}>
-            <p className="text-sm font-medium">{props.copyrightText}</p>
+          <footer className="w-full py-12 px-6 text-center border-t border-slate-800/50 mt-auto bg-slate-950 backdrop-blur-md" style={{ backgroundColor: props.backgroundColor, color: props.textColor, ...getFooterStyle('Wrapper') }}>
+            <p className="text-sm font-medium tracking-wide opacity-80" style={getFooterStyle('Copyright')}>{props.copyrightText}</p>
           </footer>
         );
       case 'Heading':
@@ -146,27 +148,30 @@ function RenderComponentNode({ comp, index, totalComponents }) {
           </div>
         );
       case 'Card':
+        const getInnerStyle = (elName) => (props.innerStyles && props.innerStyles[elName]) || {};
         return (
-          <div className="p-6 rounded-xl border border-slate-800 shadow-xl max-w-sm my-4" style={{ backgroundColor: props.backgroundColor, color: props.textColor }}>
-            <h3 className="text-lg font-bold mb-2">{props.title}</h3>
-            <p className="text-sm text-slate-400 mb-4">{props.description}</p>
-            {props.buttonText && <button className="px-4 py-2 bg-indigo-600 text-white text-xs font-semibold rounded-lg">{props.buttonText}</button>}
+          <div className="p-6 rounded-xl border border-slate-800 shadow-xl max-w-sm my-4" style={{ backgroundColor: props.backgroundColor, color: props.textColor, ...getInnerStyle('Wrapper') }}>
+            <h3 className="text-lg font-bold mb-2" style={{ ...getInnerStyle('Title') }}>{props.title}</h3>
+            <p className="text-sm text-slate-400 mb-4" style={{ ...getInnerStyle('Description') }}>{props.description}</p>
+            {props.buttonText && <button className="px-4 py-2 bg-indigo-600 text-white text-xs font-semibold rounded-lg shadow-sm" style={{ ...getInnerStyle('Button') }}>{props.buttonText}</button>}
           </div>
         );
       case 'HeroSection':
+        const getHeroStyle = (elName) => (props.innerStyles && props.innerStyles[elName]) || {};
         return (
-          <section className="flex flex-col items-center justify-center text-center py-16 px-6 w-full" style={{ backgroundColor: props.backgroundColor, color: props.textColor }}>
-            <h1 className="text-4xl font-extrabold tracking-tight mb-4">{props.title}</h1>
-            <p className="text-lg opacity-80 max-w-2xl mb-6">{props.subtitle}</p>
-            <button className="bg-indigo-600 text-white font-semibold px-6 py-2.5 rounded-lg shadow">{props.ctaText}</button>
+          <section className="flex flex-col items-center justify-center text-center py-32 px-6 w-full min-h-[60vh] bg-gradient-to-br from-slate-900 to-slate-950 relative overflow-hidden" style={{ backgroundColor: props.backgroundColor, color: props.textColor, ...getHeroStyle('Wrapper') }}>
+            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-slate-400" style={getHeroStyle('Title')}>{props.title}</h1>
+            <p className="text-lg md:text-xl text-slate-400 max-w-2xl mb-10 leading-relaxed" style={getHeroStyle('Subtitle')}>{props.subtitle}</p>
+            <button className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-8 py-4 rounded-xl shadow-[0_0_40px_-10px_rgba(79,70,229,0.5)] transition-all hover:scale-105 active:scale-95" style={getHeroStyle('CTA')}>{props.ctaText}</button>
           </section>
         );
       case 'CTABlock':
+        const getCtaStyle = (elName) => (props.innerStyles && props.innerStyles[elName]) || {};
         return (
-          <div className="w-full py-12 px-8 rounded-2xl text-center shadow-2xl my-6 flex flex-col items-center justify-center" style={{ backgroundColor: props.backgroundColor, color: props.textColor }}>
-            <h2 className="text-2xl font-extrabold mb-2">{props.heading}</h2>
-            <p className="text-sm text-indigo-200 mb-6 max-w-lg">{props.subheading}</p>
-            <button className="px-6 py-3 bg-white text-indigo-900 font-bold rounded-xl">{props.buttonText}</button>
+          <div className="w-full py-16 px-8 rounded-3xl text-center shadow-2xl my-10 flex flex-col items-center justify-center bg-gradient-to-br from-indigo-900 to-purple-900 border border-white/10 relative overflow-hidden" style={{ backgroundColor: props.backgroundColor, color: props.textColor, ...getCtaStyle('Wrapper') }}>
+            <h2 className="text-4xl font-extrabold mb-4 tracking-tight drop-shadow-md" style={getCtaStyle('Heading')}>{props.heading}</h2>
+            <p className="text-lg text-indigo-200 mb-8 max-w-xl leading-relaxed" style={getCtaStyle('Subheading')}>{props.subheading}</p>
+            <button className="px-8 py-4 bg-white text-indigo-950 font-black rounded-xl shadow-xl hover:shadow-2xl hover:-translate-y-1 hover:bg-slate-50 transition-all cursor-pointer" style={getCtaStyle('Button')}>{props.buttonText}</button>
           </div>
         );
       case 'FeatureBlock':

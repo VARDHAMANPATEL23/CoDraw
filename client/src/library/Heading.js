@@ -3,10 +3,12 @@ export const HeadingDef = {
   category: 'Typography',
   label: 'Heading',
   icon: 'heading-text',
+  styleableElements: ['Wrapper'],
   defaultProps: {
     text: 'Section Heading',
     level: 'h2',
     textColor: '#f8fafc',
+    innerStyles: {},
   },
   propsSchema: [
     { key: 'text', label: 'Heading Text', type: 'text' },

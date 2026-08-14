@@ -3,12 +3,14 @@ export const CardDef = {
   category: 'UI Blocks',
   label: 'Card',
   icon: 'card-block',
+  styleableElements: ['Wrapper', 'Title', 'Description', 'Button'],
   defaultProps: {
     title: 'Card Title',
     description: 'This is a clean container card for displaying key info.',
     buttonText: 'Learn More',
     backgroundColor: '#1e293b',
     textColor: '#f8fafc',
+    innerStyles: {},
   },
   propsSchema: [
     { key: 'title', label: 'Card Title', type: 'text' },
@@ -31,12 +33,13 @@ export const CardDef = {
     js: `import React from 'react';
 {{CSS_IMPORT}}
 
-export default function Card({ title, description, buttonText, backgroundColor, textColor }) {
+export default function Card({ title, description, buttonText, backgroundColor, textColor, innerStyles = {} }) {
+  const getInnerStyle = (elName) => innerStyles[elName] || {};
   return (
-    <div className="{{WRAPPER_CLASS}}" style={{ backgroundColor, color: textColor }}>
-      <h3 className="{{TITLE_CLASS}}">{title}</h3>
-      <p className="{{DESC_CLASS}}">{description}</p>
-      {buttonText && <button className="{{BTN_CLASS}}">{buttonText}</button>}
+    <div className="{{WRAPPER_CLASS}}" style={{ backgroundColor, color: textColor, ...getInnerStyle('Wrapper') }}>
+      <h3 className="{{TITLE_CLASS}}" style={getInnerStyle('Title')}>{title}</h3>
+      <p className="{{DESC_CLASS}}" style={getInnerStyle('Description')}>{description}</p>
+      {buttonText && <button className="{{BTN_CLASS}}" style={getInnerStyle('Button')}>{buttonText}</button>}
     </div>
   );
 }`,
@@ -49,14 +52,16 @@ interface CardProps {
   buttonText?: string;
   backgroundColor?: string;
   textColor?: string;
+  innerStyles?: Record<string, React.CSSProperties>;
 }
 
-export default function Card({ title, description, buttonText, backgroundColor, textColor }: CardProps) {
+export default function Card({ title, description, buttonText, backgroundColor, textColor, innerStyles = {} }: CardProps) {
+  const getInnerStyle = (elName: string) => innerStyles[elName] || {};
   return (
-    <div className="{{WRAPPER_CLASS}}" style={{ backgroundColor, color: textColor }}>
-      <h3 className="{{TITLE_CLASS}}">{title}</h3>
-      <p className="{{DESC_CLASS}}">{description}</p>
-      {buttonText && <button className="{{BTN_CLASS}}">{buttonText}</button>}
+    <div className="{{WRAPPER_CLASS}}" style={{ backgroundColor, color: textColor, ...getInnerStyle('Wrapper') }}>
+      <h3 className="{{TITLE_CLASS}}" style={getInnerStyle('Title')}>{title}</h3>
+      <p className="{{DESC_CLASS}}" style={getInnerStyle('Description')}>{description}</p>
+      {buttonText && <button className="{{BTN_CLASS}}" style={getInnerStyle('Button')}>{buttonText}</button>}
     </div>
   );
 }`,

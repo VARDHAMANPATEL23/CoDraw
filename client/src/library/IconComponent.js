@@ -3,10 +3,12 @@ export const IconComponentDef = {
   category: 'Media',
   label: 'Icon',
   icon: 'star',
+  styleableElements: ['Wrapper'],
   defaultProps: {
     iconName: '★',
     size: '24px',
     color: '#6366f1',
+    innerStyles: {},
   },
   propsSchema: [
     { key: 'iconName', label: 'Icon Symbol', type: 'text' },

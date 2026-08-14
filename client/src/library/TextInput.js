@@ -3,10 +3,12 @@ export const TextInputDef = {
   category: 'Forms & Input',
   label: 'Text Input',
   icon: 'input-text',
+  styleableElements: ['Wrapper'],
   defaultProps: {
     label: 'Email Address',
     placeholder: 'enter your email...',
     type: 'text',
+    innerStyles: {},
   },
   propsSchema: [
     { key: 'label', label: 'Field Label', type: 'text' },

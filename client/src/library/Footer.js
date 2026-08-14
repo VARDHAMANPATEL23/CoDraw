@@ -3,10 +3,12 @@ export const FooterDef = {
   category: 'Navigation',
   label: 'Footer',
   icon: 'layout-footer',
+  styleableElements: ['Wrapper', 'Copyright'],
   defaultProps: {
     copyrightText: '© 2026 CoDraw. All rights reserved.',
-    backgroundColor: '#0f172a',
+    backgroundColor: '#020617',
     textColor: '#94a3b8',
+    innerStyles: {},
   },
   propsSchema: [
     { key: 'copyrightText', label: 'Copyright Text', type: 'text' },
@@ -15,8 +17,8 @@ export const FooterDef = {
   ],
   styleMap: {
     tailwind: {
-      wrapper: 'w-full py-6 px-6 text-center border-t border-slate-800 mt-auto',
-      copyright: 'text-sm font-medium',
+      wrapper: 'w-full py-12 px-6 text-center border-t border-slate-800/50 mt-auto bg-slate-950 backdrop-blur-md',
+      copyright: 'text-sm font-medium tracking-wide opacity-80',
     },
     'css-modules': {
       wrapper: 'footer__wrapper',
@@ -31,10 +33,11 @@ export const FooterDef = {
     js: `import React from 'react';
 {{CSS_IMPORT}}
 
-export default function Footer({ copyrightText, backgroundColor, textColor }) {
+export default function Footer({ copyrightText, backgroundColor, textColor, innerStyles = {} }) {
+  const getInnerStyle = (elName) => innerStyles[elName] || {};
   return (
-    <footer className="{{WRAPPER_CLASS}}" style={{ backgroundColor, color: textColor }}>
-      <p className="{{COPYRIGHT_CLASS}}">{copyrightText}</p>
+    <footer className="{{WRAPPER_CLASS}}" style={{ backgroundColor, color: textColor, ...getInnerStyle('Wrapper') }}>
+      <p className="{{COPYRIGHT_CLASS}}" style={getInnerStyle('Copyright')}>{copyrightText}</p>
     </footer>
   );
 }`,
@@ -43,14 +46,16 @@ export default function Footer({ copyrightText, backgroundColor, textColor }) {
 
 interface FooterProps {
   copyrightText: string;
-  backgroundColor: string;
-  textColor: string;
+  backgroundColor?: string;
+  textColor?: string;
+  innerStyles?: Record<string, React.CSSProperties>;
 }
 
-export default function Footer({ copyrightText, backgroundColor, textColor }: FooterProps) {
+export default function Footer({ copyrightText, backgroundColor, textColor, innerStyles = {} }: FooterProps) {
+  const getInnerStyle = (elName: string) => innerStyles[elName] || {};
   return (
-    <footer className="{{WRAPPER_CLASS}}" style={{ backgroundColor, color: textColor }}>
-      <p className="{{COPYRIGHT_CLASS}}">{copyrightText}</p>
+    <footer className="{{WRAPPER_CLASS}}" style={{ backgroundColor, color: textColor, ...getInnerStyle('Wrapper') }}>
+      <p className="{{COPYRIGHT_CLASS}}" style={getInnerStyle('Copyright')}>{copyrightText}</p>
     </footer>
   );
 }`,

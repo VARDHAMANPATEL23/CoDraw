@@ -3,9 +3,11 @@ export const SelectDropdownDef = {
   category: 'Forms & Input',
   label: 'Select Dropdown',
   icon: 'chevron-down',
+  styleableElements: ['Wrapper'],
   defaultProps: {
     label: 'Choose Option',
     options: ['Option 1', 'Option 2', 'Option 3'],
+    innerStyles: {},
   },
   propsSchema: [
     { key: 'label', label: 'Field Label', type: 'text' },

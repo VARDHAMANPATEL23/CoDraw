@@ -3,8 +3,10 @@ export const SpacerDef = {
   category: 'Layout',
   label: 'Spacer',
   icon: 'space-y',
+  styleableElements: ['Wrapper'],
   defaultProps: {
     height: '32px',
+    innerStyles: {},
   },
   propsSchema: [
     { key: 'height', label: 'Height', type: 'text' },

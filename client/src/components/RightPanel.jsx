@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCanvasStore } from '../store/useCanvasStore';
 import { getComponentDef } from '../library';
 
@@ -7,6 +7,42 @@ export default function RightPanel() {
 
   const selectedComponent = components.find((c) => c.id === selectedId);
   const def = selectedComponent ? getComponentDef(selectedComponent.type) : null;
+
+  const [targetElement, setTargetElement] = useState('Wrapper');
+  const [activeTab, setActiveTab] = useState('layout');
+
+  useEffect(() => {
+    if (def && def.styleableElements && def.styleableElements.length > 0) {
+      if (!def.styleableElements.includes(targetElement)) {
+        setTargetElement(def.styleableElements[0]);
+      }
+    } else {
+      setTargetElement('Wrapper');
+    }
+  }, [selectedId, def]);
+
+  const handleStyleChange = (property, value) => {
+    if (!selectedId) return;
+    const currentProps = selectedComponent.props;
+    const currentInnerStyles = currentProps.innerStyles || {};
+    const currentElementStyles = currentInnerStyles[targetElement] || {};
+
+    updateComponent(selectedId, {
+      innerStyles: {
+        ...currentInnerStyles,
+        [targetElement]: {
+          ...currentElementStyles,
+          [property]: value
+        }
+      }
+    });
+  };
+
+  const getStyleValue = (property) => {
+    if (!selectedComponent || !selectedComponent.props.innerStyles) return '';
+    const elStyles = selectedComponent.props.innerStyles[targetElement];
+    return elStyles ? (elStyles[property] || '') : '';
+  };
 
   const handlePropChange = (key, value) => {
     if (selectedId) {
@@ -156,114 +192,153 @@ export default function RightPanel() {
 
           <div className="mt-8 pt-4 border-t border-slate-800">
             <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Advanced Styling</h4>
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1.5">
-                  <label className="block text-[10px] font-medium text-slate-400">Width</label>
-                  <input
-                    type="text"
-                    value={selectedComponent.props.advancedWidth || ''}
-                    onChange={(e) => handlePropChange('advancedWidth', e.target.value)}
-                    placeholder="e.g. 100%, 500px"
-                    className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="block text-[10px] font-medium text-slate-400">Height</label>
-                  <input
-                    type="text"
-                    value={selectedComponent.props.advancedHeight || ''}
-                    onChange={(e) => handlePropChange('advancedHeight', e.target.value)}
-                    placeholder="e.g. auto, 300px"
-                    className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1.5">
-                  <label className="block text-[10px] font-medium text-slate-400">Margin</label>
-                  <input
-                    type="text"
-                    value={selectedComponent.props.advancedMargin || ''}
-                    onChange={(e) => handlePropChange('advancedMargin', e.target.value)}
-                    placeholder="e.g. 10px 20px"
-                    className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="block text-[10px] font-medium text-slate-400">Padding</label>
-                  <input
-                    type="text"
-                    value={selectedComponent.props.advancedPadding || ''}
-                    onChange={(e) => handlePropChange('advancedPadding', e.target.value)}
-                    placeholder="e.g. 2rem"
-                    className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="block text-[10px] font-medium text-slate-400">Border Radius (Corner Type)</label>
-                <input
-                  type="text"
-                  value={selectedComponent.props.advancedBorderRadius || ''}
-                  onChange={(e) => handlePropChange('advancedBorderRadius', e.target.value)}
-                  placeholder="e.g. 8px, 50%"
-                  className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="block text-[10px] font-medium text-slate-400">Position</label>
+            
+            {def.styleableElements && def.styleableElements.length > 0 && (
+              <div className="mb-5 p-3 bg-slate-950/50 rounded-lg border border-slate-800/80">
+                <label className="block text-[10px] font-bold text-indigo-400 uppercase tracking-wider mb-2">Target Element</label>
                 <select
-                  value={selectedComponent.props.advancedPosition || ''}
-                  onChange={(e) => handlePropChange('advancedPosition', e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
+                  value={targetElement}
+                  onChange={(e) => setTargetElement(e.target.value)}
+                  className="w-full bg-slate-900 border border-indigo-500/50 rounded px-3 py-2 text-xs text-indigo-100 font-semibold focus:outline-none focus:border-indigo-500 shadow-inner"
                 >
-                  <option value="">Default (Static)</option>
-                  <option value="relative">Relative</option>
-                  <option value="absolute">Absolute</option>
-                  <option value="fixed">Fixed</option>
-                  <option value="sticky">Sticky</option>
+                  {def.styleableElements.map((el) => (
+                    <option key={el} value={el}>{el}</option>
+                  ))}
                 </select>
               </div>
+            )}
 
-              {selectedComponent.props.advancedPosition && selectedComponent.props.advancedPosition !== 'static' && (
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1.5">
-                    <label className="block text-[10px] font-medium text-slate-400">Top / Bottom</label>
-                    <input
-                      type="text"
-                      value={selectedComponent.props.advancedTopBottom || ''}
-                      onChange={(e) => handlePropChange('advancedTopBottom', e.target.value)}
-                      placeholder="e.g. top: 10px"
-                      className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
-                    />
+            <div className="border border-slate-800 rounded-lg bg-slate-900 overflow-hidden shadow-inner">
+              
+              {/* Layout & Spacing */}
+              <div className="border-b border-slate-800">
+                <button
+                  onClick={() => setActiveTab(activeTab === 'layout' ? null : 'layout')}
+                  className="w-full flex items-center justify-between px-4 py-3 bg-slate-800/50 hover:bg-slate-800 text-xs font-bold text-slate-300 hover:text-indigo-400 transition-colors uppercase tracking-wider"
+                >
+                  <span>Layout & Spacing</span>
+                  <span className="text-[10px]">{activeTab === 'layout' ? '▼' : '▶'}</span>
+                </button>
+                {activeTab === 'layout' && (
+                  <div className="p-4 space-y-4 bg-slate-900">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1.5">
+                        <label className="block text-[10px] font-medium text-slate-400">Width</label>
+                        <input type="text" value={getStyleValue('width')} onChange={(e) => handleStyleChange('width', e.target.value)} placeholder="100%, 500px" className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="block text-[10px] font-medium text-slate-400">Height</label>
+                        <input type="text" value={getStyleValue('height')} onChange={(e) => handleStyleChange('height', e.target.value)} placeholder="auto, 300px" className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500" />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1.5">
+                        <label className="block text-[10px] font-medium text-slate-400">Margin</label>
+                        <input type="text" value={getStyleValue('margin')} onChange={(e) => handleStyleChange('margin', e.target.value)} placeholder="10px 20px" className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="block text-[10px] font-medium text-slate-400">Padding</label>
+                        <input type="text" value={getStyleValue('padding')} onChange={(e) => handleStyleChange('padding', e.target.value)} placeholder="2rem" className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500" />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1.5">
+                        <label className="block text-[10px] font-medium text-slate-400">Position</label>
+                        <select value={getStyleValue('position')} onChange={(e) => handleStyleChange('position', e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
+                          <option value="">Static</option><option value="relative">Relative</option><option value="absolute">Absolute</option><option value="fixed">Fixed</option><option value="sticky">Sticky</option>
+                        </select>
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="block text-[10px] font-medium text-slate-400">Z-Index</label>
+                        <input type="number" value={getStyleValue('zIndex')} onChange={(e) => handleStyleChange('zIndex', e.target.value ? Number(e.target.value) : '')} placeholder="10" className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500" />
+                      </div>
+                    </div>
                   </div>
-                  <div className="space-y-1.5">
-                    <label className="block text-[10px] font-medium text-slate-400">Left / Right</label>
-                    <input
-                      type="text"
-                      value={selectedComponent.props.advancedLeftRight || ''}
-                      onChange={(e) => handlePropChange('advancedLeftRight', e.target.value)}
-                      placeholder="e.g. left: 5%"
-                      className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
-                    />
-                  </div>
-                </div>
-              )}
-
-              <div className="space-y-1.5">
-                <label className="block text-[10px] font-medium text-slate-400">Z-Index</label>
-                <input
-                  type="number"
-                  value={selectedComponent.props.advancedZIndex || ''}
-                  onChange={(e) => handlePropChange('advancedZIndex', e.target.value ? Number(e.target.value) : '')}
-                  placeholder="e.g. 10"
-                  className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
-                />
+                )}
               </div>
+
+              {/* Typography */}
+              <div className="border-b border-slate-800">
+                <button
+                  onClick={() => setActiveTab(activeTab === 'typography' ? null : 'typography')}
+                  className="w-full flex items-center justify-between px-4 py-3 bg-slate-800/50 hover:bg-slate-800 text-xs font-bold text-slate-300 hover:text-indigo-400 transition-colors uppercase tracking-wider"
+                >
+                  <span>Typography</span>
+                  <span className="text-[10px]">{activeTab === 'typography' ? '▼' : '▶'}</span>
+                </button>
+                {activeTab === 'typography' && (
+                  <div className="p-4 space-y-4 bg-slate-900">
+                    <div className="space-y-1.5">
+                      <label className="block text-[10px] font-medium text-slate-400">Font Family</label>
+                      <input type="text" value={getStyleValue('fontFamily')} onChange={(e) => handleStyleChange('fontFamily', e.target.value)} placeholder="Inter, sans-serif" className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500" />
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1.5">
+                        <label className="block text-[10px] font-medium text-slate-400">Size</label>
+                        <input type="text" value={getStyleValue('fontSize')} onChange={(e) => handleStyleChange('fontSize', e.target.value)} placeholder="16px, 2rem" className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="block text-[10px] font-medium text-slate-400">Weight</label>
+                        <select value={getStyleValue('fontWeight')} onChange={(e) => handleStyleChange('fontWeight', e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
+                          <option value="">Default</option><option value="400">Regular (400)</option><option value="600">SemiBold (600)</option><option value="700">Bold (700)</option><option value="800">ExtraBold (800)</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1.5">
+                        <label className="block text-[10px] font-medium text-slate-400">Color</label>
+                        <input type="color" value={getStyleValue('color') || '#ffffff'} onChange={(e) => handleStyleChange('color', e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded p-0.5 h-8 cursor-pointer" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="block text-[10px] font-medium text-slate-400">Align</label>
+                        <select value={getStyleValue('textAlign')} onChange={(e) => handleStyleChange('textAlign', e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
+                          <option value="">Default</option><option value="left">Left</option><option value="center">Center</option><option value="right">Right</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Backgrounds & Borders */}
+              <div>
+                <button
+                  onClick={() => setActiveTab(activeTab === 'borders' ? null : 'borders')}
+                  className="w-full flex items-center justify-between px-4 py-3 bg-slate-800/50 hover:bg-slate-800 text-xs font-bold text-slate-300 hover:text-indigo-400 transition-colors uppercase tracking-wider"
+                >
+                  <span>Background & Borders</span>
+                  <span className="text-[10px]">{activeTab === 'borders' ? '▼' : '▶'}</span>
+                </button>
+                {activeTab === 'borders' && (
+                  <div className="p-4 space-y-4 bg-slate-900 border-t border-slate-800">
+                    <div className="space-y-1.5">
+                      <label className="block text-[10px] font-medium text-slate-400">Background Color</label>
+                      <input type="color" value={getStyleValue('backgroundColor') || '#ffffff'} onChange={(e) => handleStyleChange('backgroundColor', e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded p-0.5 h-8 cursor-pointer" />
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1.5">
+                        <label className="block text-[10px] font-medium text-slate-400">Border Radius</label>
+                        <input type="text" value={getStyleValue('borderRadius')} onChange={(e) => handleStyleChange('borderRadius', e.target.value)} placeholder="8px" className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="block text-[10px] font-medium text-slate-400">Border Width</label>
+                        <input type="text" value={getStyleValue('borderWidth')} onChange={(e) => handleStyleChange('borderWidth', e.target.value)} placeholder="1px" className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500" />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1.5">
+                        <label className="block text-[10px] font-medium text-slate-400">Border Color</label>
+                        <input type="color" value={getStyleValue('borderColor') || '#000000'} onChange={(e) => handleStyleChange('borderColor', e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded p-0.5 h-8 cursor-pointer" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="block text-[10px] font-medium text-slate-400">Box Shadow</label>
+                        <input type="text" value={getStyleValue('boxShadow')} onChange={(e) => handleStyleChange('boxShadow', e.target.value)} placeholder="0 4px 6px rgba(0,0,0,0.1)" className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500" />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
             </div>
           </div>
         </div>

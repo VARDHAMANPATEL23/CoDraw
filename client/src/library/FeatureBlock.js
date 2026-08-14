@@ -3,10 +3,12 @@ export const FeatureBlockDef = {
   category: 'UI Blocks',
   label: 'Feature Block',
   icon: 'sparkles',
+  styleableElements: ['Wrapper'],
   defaultProps: {
     title: 'Lightning Fast Export',
     description: 'Export clean, modular React CRA code in seconds with zero lock-in.',
     iconSymbol: '⚡',
+    innerStyles: {},
   },
   propsSchema: [
     { key: 'title', label: 'Feature Title', type: 'text' },

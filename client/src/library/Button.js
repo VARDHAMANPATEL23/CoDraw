@@ -3,11 +3,13 @@ export const ButtonDef = {
   category: 'Forms & Input',
   label: 'Button',
   icon: 'square-button',
+  styleableElements: ['Wrapper'],
   defaultProps: {
     text: 'Click Me',
     variant: 'primary',
     backgroundColor: '#6366f1',
     textColor: '#ffffff',
+    innerStyles: {},
   },
   propsSchema: [
     { key: 'text', label: 'Button Label', type: 'text' },

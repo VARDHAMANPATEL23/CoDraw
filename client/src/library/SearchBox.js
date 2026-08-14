@@ -3,8 +3,10 @@ export const SearchBoxDef = {
   category: 'Forms & Input',
   label: 'Search Box',
   icon: 'search',
+  styleableElements: ['Wrapper'],
   defaultProps: {
     placeholder: 'Search...',
+    innerStyles: {},
   },
   propsSchema: [
     { key: 'placeholder', label: 'Placeholder', type: 'text' },

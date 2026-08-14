@@ -3,9 +3,11 @@ export const CheckboxDef = {
   category: 'Forms & Input',
   label: 'Checkbox',
   icon: 'check-square',
+  styleableElements: ['Wrapper'],
   defaultProps: {
     label: 'I accept the terms and conditions',
     checked: false,
+    innerStyles: {},
   },
   propsSchema: [
     { key: 'label', label: 'Checkbox Label', type: 'text' },

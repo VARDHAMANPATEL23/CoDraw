@@ -3,9 +3,11 @@ export const SectionDef = {
   category: 'Layout',
   label: 'Section',
   icon: 'layout-section',
+  styleableElements: ['Wrapper'],
   defaultProps: {
     padding: 'py-12 px-6',
     backgroundColor: '#0f172a',
+    innerStyles: {},
   },
   propsSchema: [
     { key: 'padding', label: 'Padding Class', type: 'text' },

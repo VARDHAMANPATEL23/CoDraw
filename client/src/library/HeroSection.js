@@ -3,12 +3,14 @@ export const HeroSectionDef = {
   category: 'UI Blocks',
   label: 'Hero Section',
   icon: 'layout-hero',
+  styleableElements: ['Wrapper', 'Title', 'Subtitle', 'CTA'],
   defaultProps: {
     title: 'Build Visually, Export Clean React',
     subtitle: 'Drag and drop components to visually generate clean codebases.',
     ctaText: 'Get Started',
-    backgroundColor: '#1e293b',
+    backgroundColor: 'transparent',
     textColor: '#ffffff',
+    innerStyles: {},
   },
   propsSchema: [
     { key: 'title', label: 'Title', type: 'text' },
@@ -19,10 +21,10 @@ export const HeroSectionDef = {
   ],
   styleMap: {
     tailwind: {
-      wrapper: 'flex flex-col items-center justify-center text-center py-20 px-6 w-full',
-      title: 'text-4xl font-extrabold tracking-tight mb-4',
-      subtitle: 'text-lg text-slate-300 max-w-2xl mb-8',
-      cta: 'bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition-all',
+      wrapper: 'flex flex-col items-center justify-center text-center py-32 px-6 w-full min-h-[60vh] bg-gradient-to-br from-slate-900 to-slate-950 relative overflow-hidden',
+      title: 'text-5xl md:text-7xl font-extrabold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-slate-400',
+      subtitle: 'text-lg md:text-xl text-slate-400 max-w-2xl mb-10 leading-relaxed',
+      cta: 'bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-8 py-4 rounded-xl shadow-[0_0_40px_-10px_rgba(79,70,229,0.5)] transition-all hover:scale-105 active:scale-95',
     },
     'css-modules': {
       wrapper: 'hero__wrapper',
@@ -31,22 +33,23 @@ export const HeroSectionDef = {
       cta: 'hero__cta',
     },
     bootstrap: {
-      wrapper: 'jumbotron text-center py-5 px-3',
+      wrapper: 'jumbotron text-center py-5 px-3 bg-dark text-white',
       title: 'display-4 font-weight-bold mb-3',
       subtitle: 'lead text-muted mb-4',
-      cta: 'btn btn-primary btn-lg',
+      cta: 'btn btn-primary btn-lg shadow',
     },
   },
   templates: {
     js: `import React from 'react';
 {{CSS_IMPORT}}
 
-export default function HeroSection({ title, subtitle, ctaText, backgroundColor, textColor }) {
+export default function HeroSection({ title, subtitle, ctaText, backgroundColor, textColor, innerStyles = {} }) {
+  const getInnerStyle = (elName) => innerStyles[elName] || {};
   return (
-    <section className="{{WRAPPER_CLASS}}" style={{ backgroundColor, color: textColor }}>
-      <h1 className="{{TITLE_CLASS}}">{title}</h1>
-      <p className="{{SUBTITLE_CLASS}}">{subtitle}</p>
-      <button className="{{CTA_CLASS}}">{ctaText}</button>
+    <section className="{{WRAPPER_CLASS}}" style={{ backgroundColor, color: textColor, ...getInnerStyle('Wrapper') }}>
+      <h1 className="{{TITLE_CLASS}}" style={getInnerStyle('Title')}>{title}</h1>
+      <p className="{{SUBTITLE_CLASS}}" style={getInnerStyle('Subtitle')}>{subtitle}</p>
+      <button className="{{CTA_CLASS}}" style={getInnerStyle('CTA')}>{ctaText}</button>
     </section>
   );
 }`,
@@ -57,16 +60,18 @@ interface HeroSectionProps {
   title: string;
   subtitle: string;
   ctaText: string;
-  backgroundColor: string;
-  textColor: string;
+  backgroundColor?: string;
+  textColor?: string;
+  innerStyles?: Record<string, React.CSSProperties>;
 }
 
-export default function HeroSection({ title, subtitle, ctaText, backgroundColor, textColor }: HeroSectionProps) {
+export default function HeroSection({ title, subtitle, ctaText, backgroundColor, textColor, innerStyles = {} }: HeroSectionProps) {
+  const getInnerStyle = (elName: string) => innerStyles[elName] || {};
   return (
-    <section className="{{WRAPPER_CLASS}}" style={{ backgroundColor, color: textColor }}>
-      <h1 className="{{TITLE_CLASS}}">{title}</h1>
-      <p className="{{SUBTITLE_CLASS}}">{subtitle}</p>
-      <button className="{{CTA_CLASS}}">{ctaText}</button>
+    <section className="{{WRAPPER_CLASS}}" style={{ backgroundColor, color: textColor, ...getInnerStyle('Wrapper') }}>
+      <h1 className="{{TITLE_CLASS}}" style={getInnerStyle('Title')}>{title}</h1>
+      <p className="{{SUBTITLE_CLASS}}" style={getInnerStyle('Subtitle')}>{subtitle}</p>
+      <button className="{{CTA_CLASS}}" style={getInnerStyle('CTA')}>{ctaText}</button>
     </section>
   );
 }`,

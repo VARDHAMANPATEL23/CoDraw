@@ -3,11 +3,13 @@ export const NumberInputDef = {
   category: 'Forms & Input',
   label: 'Number Input',
   icon: 'input-number',
+  styleableElements: ['Wrapper'],
   defaultProps: {
     label: 'Quantity',
     min: 0,
     max: 100,
     step: 1,
+    innerStyles: {},
   },
   propsSchema: [
     { key: 'label', label: 'Field Label', type: 'text' },

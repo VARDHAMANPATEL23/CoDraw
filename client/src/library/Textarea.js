@@ -3,10 +3,12 @@ export const TextareaDef = {
   category: 'Forms & Input',
   label: 'Textarea',
   icon: 'input-textarea',
+  styleableElements: ['Wrapper'],
   defaultProps: {
     label: 'Message',
     placeholder: 'Type your message...',
     rows: 4,
+    innerStyles: {},
   },
   propsSchema: [
     { key: 'label', label: 'Field Label', type: 'text' },

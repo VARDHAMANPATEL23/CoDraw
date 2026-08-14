@@ -3,10 +3,12 @@ export const BadgeDef = {
   category: 'Typography',
   label: 'Badge',
   icon: 'tag-badge',
+  styleableElements: ['Wrapper'],
   defaultProps: {
     text: 'New Feature',
     backgroundColor: '#3b82f6',
     textColor: '#ffffff',
+    innerStyles: {},
   },
   propsSchema: [
     { key: 'text', label: 'Badge Text', type: 'text' },
