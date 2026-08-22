@@ -9,7 +9,7 @@
 | Field | Value |
 |---|---|
 | **Current Phase** | Phase 5 — Polish & Release (in progress) |
-| **Last Completed Task** | 5.0-hotfix — URL routing, logout cleanup, advanced styling, zoom fix, bun migration |
+| **Last Completed Task** | Deep Styling Engine, TUI Dashboard Overhaul, Bun API crash fix |
 | **Next Task** | 5.1 — Component grouping, user isolation, ZIP import, Blender-style UI redesign |
 | **Blockers** | None |
 | **Human Decisions Pending** | D1, D2, D3, D4, D5 (see AGENTS.md §12) |
@@ -242,7 +242,7 @@ Known issues deferred to v2:
 | July 2026 | AGENTS.md + PROGRESS.md created. Project not yet started. |
 | 25-07-2026 | Phases 1-4 completed in full. All 23 components, export engine, auth, cloud sync. |
 | 04-08-2026 | MongoDB Atlas connection fixed. New Project modal wired. Canvas zoom fixed. Advanced styling panel added. URL routing with react-router-dom. Logout cleanup. Migrated from npm to bun. |
-| 14-08-2026 | Updated start.sh and start.bat with a professional TUI dashboard mimicking Neofetch and BTOP using bash ASCII/ANSI and a PowerShell polyglot. |
+| 14-08-2026 | Deep Customization Engine implemented. TUI dashboard rewritten for flicker-free 3-column logging. Fixed Bun backend crash. Navbar layout bug fixed. |
 
 ---
 
@@ -255,3 +255,6 @@ Known issues deferred to v2:
 - **Implemented:** Export Engine updates to automatically convert nested `innerStyles` to JSX style props for 100% fidelity exports.
 - **Upgraded:** Premium Tailwind aesthetic overhaul for core components (`HeroSection`, `Navbar`, `CTABlock`, `Footer`, `Card`).
 - **Rolled Out:** Structural deep-style support deployed across the entire component library (24 components) to prevent Right Panel sync crashes.
+- **Fixed:** Navbar visual bug (overlapping UI controls) resolved by adjusting positioning constraints.
+- **Fixed:** Backend startup crash on Bun v1.3.14 via `process.getBuiltinModule` polyfill for Mongoose 9 / BSON 7.
+- **Upgraded:** `start.sh` TUI dashboard upgraded with a professional 3-column flicker-free render engine, live log streaming, and terminal signal loop fixes.

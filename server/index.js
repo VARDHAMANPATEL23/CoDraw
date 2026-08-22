@@ -1,3 +1,12 @@
+// Polyfill for Bun < 1.4 compatibility with Mongoose 9 / BSON 7
+const originalGet = globalThis.process?.getBuiltinModule;
+if (originalGet) {
+  globalThis.process.getBuiltinModule = function(mod) {
+    if (mod === 'v8') return {};
+    return originalGet.apply(this, arguments);
+  };
+}
+
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 

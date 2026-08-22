@@ -19,7 +19,7 @@ export const NavbarDef = {
   ],
   styleMap: {
     tailwind: {
-      wrapper: 'flex items-center justify-between px-8 py-5 w-full bg-slate-900/80 backdrop-blur-md border-b border-white/5 sticky top-0 z-50',
+      wrapper: 'flex items-center justify-between px-8 py-5 w-full bg-slate-900/80 backdrop-blur-md border-b border-white/5 relative z-10',
       brand: 'text-2xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-cyan-400',
       linkList: 'flex items-center gap-8 list-none m-0 p-0',
       link: 'text-sm font-semibold text-slate-300 hover:text-white transition-colors cursor-pointer',

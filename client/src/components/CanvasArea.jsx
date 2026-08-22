@@ -40,7 +40,7 @@ function RenderComponentNode({ comp, index, totalComponents }) {
       case 'Navbar':
         const getNavStyle = (elName) => (props.innerStyles && props.innerStyles[elName]) || {};
         return (
-          <nav className="flex items-center justify-between px-8 py-5 w-full bg-slate-900/80 backdrop-blur-md border-b border-white/5 sticky top-0 z-50" style={{ backgroundColor: props.backgroundColor, color: props.textColor, ...getNavStyle('Wrapper') }}>
+          <nav className="flex items-center justify-between px-8 py-5 w-full bg-slate-900/80 backdrop-blur-md border-b border-white/5 relative z-10" style={{ backgroundColor: props.backgroundColor, color: props.textColor, ...getNavStyle('Wrapper') }}>
             <span className="text-2xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-cyan-400" style={getNavStyle('Brand')}>{props.brand}</span>
             <ul className="flex items-center gap-8 list-none m-0 p-0" style={getNavStyle('LinkList')}>
               {(props.links || []).map((link, i) => (
