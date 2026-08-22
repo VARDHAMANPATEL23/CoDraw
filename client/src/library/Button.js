@@ -9,6 +9,7 @@ export const ButtonDef = {
     variant: 'primary',
     backgroundColor: '#6366f1',
     textColor: '#ffffff',
+    linkTo: '',
     innerStyles: {},
   },
   propsSchema: [
@@ -16,6 +17,7 @@ export const ButtonDef = {
     { key: 'variant', label: 'Variant', type: 'select', options: ['primary', 'secondary', 'outline'] },
     { key: 'backgroundColor', label: 'Background', type: 'color' },
     { key: 'textColor', label: 'Text Color', type: 'color' },
+    { key: 'linkTo', label: 'Link URL (for MPA)', type: 'text' },
   ],
   styleMap: {
     tailwind: {
@@ -32,7 +34,14 @@ export const ButtonDef = {
     js: `import React from 'react';
 {{CSS_IMPORT}}
 
-export default function Button({ text, backgroundColor, textColor }) {
+export default function Button({ text, backgroundColor, textColor, linkTo }) {
+  if (linkTo) {
+    return (
+      <a href={linkTo} className="{{WRAPPER_CLASS}}" style={{ backgroundColor, color: textColor, textDecoration: 'none' }}>
+        {text}
+      </a>
+    );
+  }
   return (
     <button className="{{WRAPPER_CLASS}}" style={{ backgroundColor, color: textColor }}>
       {text}
@@ -46,9 +55,17 @@ interface ButtonProps {
   text: string;
   backgroundColor: string;
   textColor: string;
+  linkTo?: string;
 }
 
-export default function Button({ text, backgroundColor, textColor }: ButtonProps) {
+export default function Button({ text, backgroundColor, textColor, linkTo }: ButtonProps) {
+  if (linkTo) {
+    return (
+      <a href={linkTo} className="{{WRAPPER_CLASS}}" style={{ backgroundColor, color: textColor, textDecoration: 'none' }}>
+        {text}
+      </a>
+    );
+  }
   return (
     <button className="{{WRAPPER_CLASS}}" style={{ backgroundColor, color: textColor }}>
       {text}

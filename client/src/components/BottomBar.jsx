@@ -2,7 +2,12 @@ import React, { useState } from 'react';
 import { useCanvasStore } from '../store/useCanvasStore';
 
 export default function BottomBar() {
-  const { components, zoomLevel, zoomIn, zoomOut, resetZoom, showGrid, toggleGrid, meta } = useCanvasStore();
+  const { 
+    components, 
+    zoomLevel, zoomIn, zoomOut, resetZoom, 
+    isolatedZoomLevel, zoomInIsolated, zoomOutIsolated, resetIsolatedZoom,
+    showGrid, toggleGrid, meta, activeCanvas
+  } = useCanvasStore();
   const [showJsonModal, setShowJsonModal] = useState(false);
 
   const currentJSON = {
@@ -14,29 +19,35 @@ export default function BottomBar() {
     },
   };
 
+  const isActiveIsolated = activeCanvas === 'isolated';
+  const activeZoomLevel = isActiveIsolated ? isolatedZoomLevel : zoomLevel;
+  const activeZoomIn = isActiveIsolated ? zoomInIsolated : zoomIn;
+  const activeZoomOut = isActiveIsolated ? zoomOutIsolated : zoomOut;
+  const activeResetZoom = isActiveIsolated ? resetIsolatedZoom : resetZoom;
+
   return (
     <footer className="h-9 bg-slate-900 border-t border-slate-800 text-slate-400 px-4 flex items-center justify-between text-xs select-none z-20">
       <div className="flex items-center space-x-3">
         <span className="font-mono text-slate-500">Zoom:</span>
         <button
-          onClick={zoomOut}
+          onClick={activeZoomOut}
           className="w-5 h-5 flex items-center justify-center bg-slate-800 hover:bg-slate-700 rounded text-slate-200 font-bold"
           title="Zoom Out"
         >
           -
         </button>
-        <span className="font-mono text-slate-200 w-10 text-center">{zoomLevel}%</span>
+        <span className="font-mono text-slate-200 w-10 text-center">{activeZoomLevel}%</span>
         <button
-          onClick={zoomIn}
+          onClick={activeZoomIn}
           className="w-5 h-5 flex items-center justify-center bg-slate-800 hover:bg-slate-700 rounded text-slate-200 font-bold"
           title="Zoom In"
         >
           +
         </button>
         <button
-          onClick={resetZoom}
+          onClick={activeResetZoom}
           className="text-[10px] bg-slate-800 hover:bg-slate-700 px-1.5 py-0.5 rounded text-slate-400 hover:text-slate-200"
-          title="Reset Zoom to 85%"
+          title="Reset Zoom"
         >
           Reset
         </button>
@@ -52,6 +63,15 @@ export default function BottomBar() {
           <span className="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
           <span>Grid Overlay</span>
         </button>
+      </div>
+      
+      <div className="flex-1 flex justify-center items-center px-4">
+        <div className="flex items-center space-x-2 bg-slate-950 px-3 py-1 rounded-full border border-slate-800">
+          <span className={`w-2 h-2 rounded-full ${isActiveIsolated ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.5)]'}`}></span>
+          <span className="font-semibold text-slate-300">
+            Active: {isActiveIsolated ? 'Isolated Canvas' : 'Main Canvas'}
+          </span>
+        </div>
       </div>
 
       <div className="flex items-center space-x-4">

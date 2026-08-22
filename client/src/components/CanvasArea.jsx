@@ -3,7 +3,7 @@ import { useDroppable } from '@dnd-kit/core';
 import { useCanvasStore } from '../store/useCanvasStore';
 import { getComponentDef } from '../library';
 
-function RenderComponentNode({ comp, index, totalComponents }) {
+export function RenderComponentNode({ comp, index, totalComponents, disableInteractions = false }) {
   const {
     selectedId,
     setSelectedId,
@@ -214,7 +214,9 @@ function RenderComponentNode({ comp, index, totalComponents }) {
     <div
       onClick={(e) => {
         e.stopPropagation();
-        setSelectedId(comp.id);
+        if (!disableInteractions) {
+          setSelectedId(comp.id);
+        }
       }}
       style={getAdvancedStyles()}
       className={`group relative cursor-pointer transition-all border ${
@@ -224,7 +226,8 @@ function RenderComponentNode({ comp, index, totalComponents }) {
       }`}
     >
       {/* Component Hover Control Toolbar */}
-      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900/90 backdrop-blur-md border border-slate-700 rounded-md shadow-lg flex items-center space-x-1 p-1 z-20">
+      {!disableInteractions && (
+        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900/90 backdrop-blur-md border border-slate-700 rounded-md shadow-lg flex items-center space-x-1 p-1 z-20">
         <button
           disabled={index === 0}
           onClick={(e) => {
@@ -268,6 +271,7 @@ function RenderComponentNode({ comp, index, totalComponents }) {
           DEL
         </button>
       </div>
+      )}
 
       {renderVisual()}
     </div>
@@ -275,24 +279,66 @@ function RenderComponentNode({ comp, index, totalComponents }) {
 }
 
 export default function CanvasArea() {
-  const { components, setSelectedId, zoomLevel, setZoomLevel, showGrid } = useCanvasStore();
+  const { components, setSelectedId, zoomLevel, setZoomLevel, showGrid, setActiveCanvas } = useCanvasStore();
   const { setNodeRef, isOver } = useDroppable({
     id: 'canvas-drop-zone',
   });
+  const containerRef = React.useRef(null);
 
-  const handleWheel = (e) => {
-    if (e.ctrlKey || e.metaKey) {
+  React.useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const onWheel = (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        const delta = e.deltaY < 0 ? 5 : -5;
+        setZoomLevel((prev) => Math.min(Math.max(prev + delta, 25), 200));
+      }
+    };
+
+    container.addEventListener('wheel', onWheel, { passive: false });
+    return () => container.removeEventListener('wheel', onWheel);
+  }, [setZoomLevel]);
+  const [isPanning, setIsPanning] = React.useState(false);
+  const startPanRef = React.useRef({ x: 0, y: 0, scrollLeft: 0, scrollTop: 0 });
+
+  const handleMouseDown = (e) => {
+    if (e.button === 1) { // Middle mouse
       e.preventDefault();
-      const delta = e.deltaY < 0 ? 5 : -5;
-      setZoomLevel(zoomLevel + delta);
+      setIsPanning(true);
+      startPanRef.current = {
+        x: e.clientX,
+        y: e.clientY,
+        scrollLeft: containerRef.current.scrollLeft,
+        scrollTop: containerRef.current.scrollTop
+      };
     }
+  };
+
+  const handleMouseMove = (e) => {
+    if (isPanning && containerRef.current) {
+      const dx = e.clientX - startPanRef.current.x;
+      const dy = e.clientY - startPanRef.current.y;
+      containerRef.current.scrollLeft = startPanRef.current.scrollLeft - dx;
+      containerRef.current.scrollTop = startPanRef.current.scrollTop - dy;
+    }
+  };
+
+  const handleMouseUp = (e) => {
+    if (e.button === 1) setIsPanning(false);
   };
 
   return (
     <main
+      ref={containerRef}
+      onMouseEnter={() => setActiveCanvas('main')}
       onClick={() => setSelectedId(null)}
-      onWheel={handleWheel}
-      className="flex-1 bg-slate-950 flex flex-col items-center justify-start p-6 overflow-auto relative select-none"
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={() => setIsPanning(false)}
+      className={`flex-1 bg-slate-950 flex flex-col items-center justify-start p-6 overflow-auto relative select-none ${isPanning ? 'cursor-grabbing' : ''}`}
     >
       {/* Layout-preserving wrapper */}
       <div

@@ -3,9 +3,10 @@ import { useCanvasStore } from '../store/useCanvasStore';
 import { getComponentDef } from '../library';
 
 export default function RightPanel() {
-  const { selectedId, components, updateComponent, removeComponent, meta, setProjectMeta } = useCanvasStore();
+  const { selectedId, isolatedComponentId, isSplitView, components, updateComponent, removeComponent, isolateComponent, meta, setProjectMeta } = useCanvasStore();
 
-  const selectedComponent = components.find((c) => c.id === selectedId);
+  const effectiveSelectedId = isSplitView && isolatedComponentId ? isolatedComponentId : selectedId;
+  const selectedComponent = components.find((c) => c.id === effectiveSelectedId);
   const def = selectedComponent ? getComponentDef(selectedComponent.type) : null;
 
   const [targetElement, setTargetElement] = useState('Wrapper');
@@ -19,15 +20,15 @@ export default function RightPanel() {
     } else {
       setTargetElement('Wrapper');
     }
-  }, [selectedId, def]);
+  }, [effectiveSelectedId, def]);
 
   const handleStyleChange = (property, value) => {
-    if (!selectedId) return;
+    if (!effectiveSelectedId) return;
     const currentProps = selectedComponent.props;
     const currentInnerStyles = currentProps.innerStyles || {};
     const currentElementStyles = currentInnerStyles[targetElement] || {};
 
-    updateComponent(selectedId, {
+    updateComponent(effectiveSelectedId, {
       innerStyles: {
         ...currentInnerStyles,
         [targetElement]: {
@@ -45,8 +46,8 @@ export default function RightPanel() {
   };
 
   const handlePropChange = (key, value) => {
-    if (selectedId) {
-      updateComponent(selectedId, { [key]: value });
+    if (effectiveSelectedId) {
+      updateComponent(effectiveSelectedId, { [key]: value });
     }
   };
 
@@ -58,7 +59,7 @@ export default function RightPanel() {
   };
 
   return (
-    <aside className="w-80 bg-slate-900 border-l border-slate-800 text-slate-300 flex flex-col select-none overflow-y-auto">
+    <aside className="w-full h-full bg-slate-900 border-l border-slate-800 text-slate-300 flex flex-col select-none overflow-y-auto">
       <div className="p-4 border-b border-slate-800 flex items-center justify-between">
         <h2 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Properties</h2>
         <div className="flex items-center space-x-2">
@@ -89,12 +90,21 @@ export default function RightPanel() {
               <h3 className="text-sm font-bold text-slate-100">{def.label}</h3>
               <span className="text-[10px] text-slate-500 font-mono">ID: {selectedComponent.id}</span>
             </div>
-            <button
-              onClick={() => removeComponent(selectedComponent.id)}
-              className="text-xs text-rose-400 hover:text-rose-300 bg-rose-950/60 border border-rose-900/60 px-2 py-1 rounded hover:bg-rose-900/80 transition-colors"
-            >
-              Delete
-            </button>
+            <div className="flex space-x-2">
+              <button
+                onClick={() => isolateComponent(selectedComponent.id)}
+                className="text-xs text-indigo-400 hover:text-indigo-300 bg-indigo-950/60 border border-indigo-900/60 px-2 py-1 rounded hover:bg-indigo-900/80 transition-colors"
+                title="Open in Component Isolation Mode"
+              >
+                Isolate
+              </button>
+              <button
+                onClick={() => removeComponent(selectedComponent.id)}
+                className="text-xs text-rose-400 hover:text-rose-300 bg-rose-950/60 border border-rose-900/60 px-2 py-1 rounded hover:bg-rose-900/80 transition-colors"
+              >
+                Delete
+              </button>
+            </div>
           </div>
 
           <div className="space-y-4">

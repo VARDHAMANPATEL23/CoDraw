@@ -50,7 +50,7 @@ export default function LeftPanel() {
   const categories = ['Layout', 'Navigation', 'Typography', 'Forms & Input', 'Media', 'UI Blocks'];
 
   return (
-    <aside className="w-64 bg-slate-900 border-r border-slate-800 text-slate-300 flex flex-col select-none overflow-hidden">
+    <aside className="w-full h-full bg-slate-900 border-r border-slate-800 text-slate-300 flex flex-col select-none overflow-hidden">
       <div className="p-4 border-b border-slate-800 space-y-3">
         <h2 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Components</h2>
         <input

@@ -19,7 +19,16 @@ export const useCanvasStore = create((set, get) => ({
   past: [],
   future: [],
   zoomLevel: 70,
+  isolatedZoomLevel: 100,
   showGrid: true,
+  isSplitView: false,
+  isolatedComponentId: null,
+  activeCanvas: 'main',
+  
+  setActiveCanvas: (canvasName) => set({ activeCanvas: canvasName }),
+  toggleSplitView: () => set((state) => ({ isSplitView: !state.isSplitView })),
+  isolateComponent: (id) => set({ isolatedComponentId: id, isSplitView: true, activeCanvas: 'isolated' }),
+  exitIsolation: () => set({ isolatedComponentId: null, isSplitView: false, activeCanvas: 'main' }),
 
   recordHistory: () => {
     const { components, past } = get();
@@ -34,10 +43,22 @@ export const useCanvasStore = create((set, get) => ({
 
   setSelectedId: (id) => set({ selectedId: id }),
 
-  setZoomLevel: (zoom) => set({ zoomLevel: Math.min(Math.max(zoom, 30), 200) }),
+  setZoomLevel: (zoomOrUpdater) => set((state) => {
+    const newZoom = typeof zoomOrUpdater === 'function' ? zoomOrUpdater(state.zoomLevel) : zoomOrUpdater;
+    return { zoomLevel: Math.min(Math.max(newZoom, 30), 200) };
+  }),
   zoomIn: () => set((state) => ({ zoomLevel: Math.min(state.zoomLevel + 10, 200) })),
   zoomOut: () => set((state) => ({ zoomLevel: Math.max(state.zoomLevel - 10, 30) })),
   resetZoom: () => set({ zoomLevel: 70 }),
+
+  setIsolatedZoomLevel: (zoomOrUpdater) => set((state) => {
+    const newZoom = typeof zoomOrUpdater === 'function' ? zoomOrUpdater(state.isolatedZoomLevel) : zoomOrUpdater;
+    return { isolatedZoomLevel: Math.min(Math.max(newZoom, 30), 200) };
+  }),
+  zoomInIsolated: () => set((state) => ({ isolatedZoomLevel: Math.min(state.isolatedZoomLevel + 10, 200) })),
+  zoomOutIsolated: () => set((state) => ({ isolatedZoomLevel: Math.max(state.isolatedZoomLevel - 10, 30) })),
+  resetIsolatedZoom: () => set({ isolatedZoomLevel: 100 }),
+
   toggleGrid: () => set((state) => ({ showGrid: !state.showGrid })),
 
   addComponent: (component) => set((state) => {

@@ -101,8 +101,26 @@ export default function ProjectDashboard({ onOpenProject, onNewProjectClick }) {
         </header>
 
         {loading ? (
-          <div className="flex items-center justify-center py-20 text-slate-500 text-sm">
-            Loading projects...
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="bg-slate-900 border border-slate-800 rounded-xl p-5 animate-pulse flex flex-col justify-between h-40">
+                <div>
+                  <div className="flex justify-between items-center mb-4">
+                    <div className="h-5 bg-slate-800 rounded w-1/2"></div>
+                    <div className="h-4 bg-slate-800 rounded w-12"></div>
+                  </div>
+                  <div className="h-3 bg-slate-800 rounded w-1/3 mb-2"></div>
+                  <div className="h-3 bg-slate-800 rounded w-1/4"></div>
+                </div>
+                <div className="border-t border-slate-800/80 pt-4 mt-4 flex justify-between">
+                  <div className="h-3 bg-slate-800 rounded w-1/4"></div>
+                  <div className="flex space-x-2">
+                    <div className="h-5 bg-slate-800 rounded w-12"></div>
+                    <div className="h-5 bg-slate-800 rounded w-12"></div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         ) : projects.length === 0 ? (
           <div className="text-center py-20 border-2 border-dashed border-slate-800 rounded-2xl">

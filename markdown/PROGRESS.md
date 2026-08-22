@@ -9,7 +9,7 @@
 | Field | Value |
 |---|---|
 | **Current Phase** | Phase 5 — Polish & Release (in progress) |
-| **Last Completed Task** | Deep Styling Engine, TUI Dashboard Overhaul, Bun API crash fix |
+| **Last Completed Task** | 5.0-hotfix — URL routing, logout cleanup, advanced styling, zoom fix, bun migration |
 | **Next Task** | 5.1 — Component grouping, user isolation, ZIP import, Blender-style UI redesign |
 | **Blockers** | None |
 | **Human Decisions Pending** | D1, D2, D3, D4, D5 (see AGENTS.md §12) |
@@ -147,13 +147,13 @@ Issues found: None.
 
 ### Task Checklist
 - [x] 5.0-hotfix — Critical bug fixes and UX improvements (see below)
-- [ ] 5.1 — Workbox service worker (app shell caching)
-- [ ] 5.2 — "New update available" banner
-- [ ] 5.3 — Error state audit (all async ops)
-- [ ] 5.4 — Loading state audit (skeletons, spinners, disabled buttons)
+- [x] 5.1 — Workbox service worker (app shell caching)
+- [x] 5.2 — "New update available" banner
+- [x] 5.3 — Error state audit (all async ops)
+- [x] 5.4 — Loading state audit (skeletons, spinners, disabled buttons)
 - [ ] 5.5 — Cross-browser QA (Chrome, Firefox, Edge)
 - [ ] 5.6 — Keyboard shortcut audit
-- [ ] 5.7 — Empty states (canvas, dashboard, search)
+- [x] 5.7 — Empty states (canvas, dashboard, search)
 - [ ] 5.8 — Production deploy (Vercel + Railway/Render)
 - [ ] 5.9 — Final end-to-end QA on clean machine
 
@@ -243,6 +243,7 @@ Known issues deferred to v2:
 | 25-07-2026 | Phases 1-4 completed in full. All 23 components, export engine, auth, cloud sync. |
 | 04-08-2026 | MongoDB Atlas connection fixed. New Project modal wired. Canvas zoom fixed. Advanced styling panel added. URL routing with react-router-dom. Logout cleanup. Migrated from npm to bun. |
 | 14-08-2026 | Deep Customization Engine implemented. TUI dashboard rewritten for flicker-free 3-column logging. Fixed Bun backend crash. Navbar layout bug fixed. |
+| 22-08-2026 | Implemented Offline PWA Service Worker (Workbox). Added Update Banner logic. Deployed Blender-style Split-View Architecture using react-resizable-panels for Custom Component Isolation mode. |
 
 ---
 
@@ -258,3 +259,19 @@ Known issues deferred to v2:
 - **Fixed:** Navbar visual bug (overlapping UI controls) resolved by adjusting positioning constraints.
 - **Fixed:** Backend startup crash on Bun v1.3.14 via `process.getBuiltinModule` polyfill for Mongoose 9 / BSON 7.
 - **Upgraded:** `start.sh` TUI dashboard upgraded with a professional 3-column flicker-free render engine, live log streaming, and terminal signal loop fixes.
+
+## 22-08-2026 (Phase 5 Production Readiness)
+- **Implemented:** Workbox Service Worker injected into the CRA build pipeline for offline App Shell caching (Task 5.1).
+- **Implemented:** Global Update Banner deployed using a global Zustand store (`useAppStore`) to prompt users when a new production build is detected (Task 5.2).
+- **Upgraded:** Refactored entire application layout into a robust Blender-style 3-pane resizable windowing system using `react-resizable-panels`.
+- **Feature Foundation:** "Split View" toggle added to TopBar, splitting the center canvas into two separate workspaces to support the upcoming Custom Component Isolation Mode.
+- **Verified:** Performed production build check via `bun run build`. Compilation successful.
+- **Upgraded:** RightPanel modified to intelligently target `isolatedComponentId` during isolation mode.
+- **Upgraded:** Canvas selection (`setSelectedId`) now triggers an automatic, seamless collapse of the isolation panel on defocus, providing a fluid MS Paint style experience.
+- **Implemented:** Subtask 3 (Tasks 5.3 & 5.4) - Added Toast notification banners for save/export operations, loading spinners to async buttons, and a polished skeleton pulse loader in `ProjectDashboard.jsx`.
+- **Implemented:** Subtask 4 (Task 5.7) - Emptys states verified and audited for Dashboard, Canvas, and LeftPanel search views.
+- **Implemented:** Multi-Page Application (MPA) support added to interactive elements (`Button`, `CTABlock`, `Card`) via a new `linkTo` property.
+- **Implemented:** Middle-mouse panning and high-performance `Ctrl+Wheel` scroll zoom synchronized perfectly across both Main Canvas and Isolated Canvas.
+- **Upgraded:** Active canvas tracking now effortlessly updates on mouse hover (`onMouseEnter`), instantly syncing the BottomBar zoom controls and badge indicators.
+- **Fixed:** Resolved React Hooks ordering bug in `IsolatedCanvasArea.jsx` that caused a crash when the isolated component was deleted from the canvas.
+- **Seeded:** Demo database populated with 5 pre-configured testing users and 10 dynamic cross-stack projects.

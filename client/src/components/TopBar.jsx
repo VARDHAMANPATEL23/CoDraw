@@ -5,15 +5,47 @@ import AuthModal from './AuthModal';
 import { exportProject } from '../engine';
 import { useAuthStore } from '../store/useAuthStore';
 import { useOfflineSync } from '../hooks/useOfflineSync';
+import { saveProjectToDB } from '../db/projectDB';
+
+const Spinner = () => (
+  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+  </svg>
+);
 
 export default function TopBar({ onBackToDashboard }) {
-  const { meta, components, undo, redo, past, future } = useCanvasStore();
+  const { meta, components, undo, redo, past, future, isSplitView, toggleSplitView } = useCanvasStore();
   const [showPreview, setShowPreview] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [toast, setToast] = useState({ show: false, message: '', type: 'info' });
 
   const { user, isAuthenticated, logout } = useAuthStore();
   const { isOnline } = useOfflineSync();
+
+  const showToast = (message, type = 'info') => {
+    setToast({ show: true, message, type });
+    setTimeout(() => setToast({ show: false, message: '', type: 'info' }), 3000);
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      const currentJSON = {
+        meta: { ...meta, updatedAt: new Date().toISOString() },
+        canvas: { width: 1440, gridSize: 8, components },
+      };
+      await saveProjectToDB(currentJSON);
+      showToast('Project saved successfully!', 'success');
+    } catch (err) {
+      console.error('Save error:', err);
+      showToast('Failed to save project.', 'error');
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const handleExport = async () => {
     setIsExporting(true);
@@ -27,9 +59,10 @@ export default function TopBar({ onBackToDashboard }) {
         },
       };
       await exportProject(currentJSON);
+      showToast('Export complete! ZIP downloaded.', 'success');
     } catch (err) {
       console.error('Export error:', err);
-      alert('Failed to export project: ' + err.message);
+      showToast('Failed to export project: ' + err.message, 'error');
     } finally {
       setIsExporting(false);
     }
@@ -37,6 +70,11 @@ export default function TopBar({ onBackToDashboard }) {
 
   return (
     <>
+      {toast.show && (
+        <div className={`fixed top-16 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full shadow-lg text-sm font-semibold transition-all ${toast.type === 'error' ? 'bg-rose-500 text-white' : 'bg-emerald-500 text-white'}`}>
+          {toast.message}
+        </div>
+      )}
       <header className="h-14 bg-slate-900 border-b border-slate-800 text-slate-100 px-6 flex items-center justify-between z-20 select-none">
         <div className="flex items-center space-x-4">
           <button
@@ -67,20 +105,32 @@ export default function TopBar({ onBackToDashboard }) {
           </button>
           <span className="text-slate-700">|</span>
           <button
+            onClick={toggleSplitView}
+            className={`px-3 py-1.5 rounded text-xs font-medium transition-colors ${
+              isSplitView ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow' : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+            }`}
+          >
+            {isSplitView ? 'Merge View' : 'Split View'}
+          </button>
+          <button
             onClick={() => setShowPreview(true)}
             className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded text-xs text-slate-300 font-medium transition-colors"
           >
             Preview
           </button>
-          <button className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded text-xs text-slate-300 font-medium transition-colors">
-            Save
+          <button
+            disabled={isSaving}
+            onClick={handleSave}
+            className="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 rounded text-xs text-slate-300 font-medium transition-colors flex items-center"
+          >
+            {isSaving ? <><Spinner /> Saving...</> : <span>Save</span>}
           </button>
           <button
             disabled={isExporting}
             onClick={handleExport}
             className="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 rounded text-xs font-semibold text-white shadow transition-all flex items-center space-x-1"
           >
-            {isExporting ? <span>Exporting...</span> : <span>Export</span>}
+            {isExporting ? <><Spinner /> Exporting...</> : <span>Export</span>}
           </button>
         </div>
 

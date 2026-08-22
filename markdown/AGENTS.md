@@ -134,6 +134,7 @@ This is the **single source of truth** for every project. The export engine read
         "props": {
           "brand": "My Site",
           "links": ["Home", "About", "Contact"],
+          "linkTo": "/about",
           "backgroundColor": "#1a1a2e",
           "textColor": "#ffffff"
         },
@@ -152,6 +153,7 @@ This is the **single source of truth** for every project. The export engine read
 - Every component node has a unique `id`, a `type` matching a library entry, and a `props` object.
 - `parentId: null` means root-level (direct child of page). Non-null means nested inside another component.
 - `order` is the render order among siblings (0-indexed).
+- **MPA Support:** Components like Button, Card, and CTABlock can accept a `linkTo` prop to act as navigational anchors (`<a>` tags) within the exported site.
 
 ---
 
@@ -378,25 +380,25 @@ src/
 ## 7. UI Layout Reference
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
+┌────────────────────────────────────────────────────────────────────┐
 │ TOP BAR: Logo | Project Name | Undo Redo | Preview | Save | Export | [JS/TS] | ●Online │
-├──────────────┬──────────────────────────────────┬───────────────┤
-│  LEFT PANEL  │                                  │  RIGHT PANEL  │
-│              │         C A N V A S              │               │
-│  Component   │   (represents the webpage)       │  Properties   │
-│  Library     │   grid overlay, drop zone        │  Panel        │
-│              │   components render visually      │               │
-│  [search]    │                                  │  [context-    │
-│              │                                  │   sensitive]  │
-│  Layout      │                                  │               │
-│  Navigation  │                                  │  Styling:     │
-│  Typography  │                                  │  [Tailwind ▾] │
-│  Forms       │                                  │               │
-│  Media       │                                  │  Lang: [JS]   │
-│  UI Blocks   │                                  │  (read-only)  │
-├──────────────┴──────────────────────────────────┴───────────────┤
-│ BOTTOM BAR: Zoom [−][+] | Grid [toggle] | Components: 4 | JSON View (dev) │
-└─────────────────────────────────────────────────────────────────┘
+├───────────────┬────────────────────────────────────┬───────────────┤
+│  LEFT PANEL   │                                    │  RIGHT PANEL  │
+│               │         C A N V A S                │               │
+│  Component    │   (represents the webpage)         │  Properties   │
+│  Library      │   grid overlay, drop zone          │  Panel        │
+│               │   components render visually       │               │
+│  [search]     │                                    │  [context-    │
+│               │                                    │   sensitive]  │
+│  Layout       │                                    │               │
+│  Navigation   │                                    │  Styling:     │
+│  Typography   │                                    │  [Tailwind ▾] │
+│  Forms        │                                    │               │
+│  Media        │                                    │  Lang: [JS]   │
+│  UI Blocks    │                                    │  (read-only)  │
+├───────────────┴────────────────────────────────────┴───────────────┤
+│ BOTTOM BAR: Zoom [−][+] | Grid [toggle] | Active: [Main/Isolated] | Components: 4 | JSON View (dev) │
+└────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
