@@ -57,6 +57,11 @@ export default function ProjectDashboard({ onOpenProject, onNewProjectClick }) {
         <header className="flex items-center justify-between border-b border-slate-800 pb-6 mb-8">
           <div>
             <h1 className="text-3xl font-extrabold tracking-tight text-white flex items-center gap-3">
+              <img
+                src={`${process.env.PUBLIC_URL || ""}/favicon.svg`}
+                alt="CoDraw"
+                className="w-9 h-9 rounded-xl shadow-md"
+              />
               CoDraw Dashboard
             </h1>
             <p className="text-slate-400 text-sm mt-1">

@@ -79,10 +79,15 @@ export default function TopBar({ onBackToDashboard }) {
         <div className="flex items-center space-x-4">
           <button
             onClick={onBackToDashboard}
-            className="flex items-center space-x-2 text-indigo-400 hover:text-indigo-300 font-bold transition-colors"
+            className="flex items-center space-x-2.5 text-indigo-400 hover:text-indigo-300 font-bold transition-colors group"
             title="Back to Dashboard"
           >
-            <span className="text-xl">CoDraw</span>
+            <img
+              src={`${process.env.PUBLIC_URL || ''}/favicon.svg`}
+              alt="CoDraw"
+              className="w-7 h-7 rounded-lg shadow-sm transition-transform group-hover:scale-105"
+            />
+            <span className="text-xl tracking-tight">CoDraw</span>
           </button>
           <span className="text-slate-700">|</span>
           <h1 className="text-sm font-semibold text-slate-200">{meta.name || 'My Project'}</h1>
