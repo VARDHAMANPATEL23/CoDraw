@@ -1,13 +1,14 @@
 {
-  "name": "codraw-monorepo",
-  "version": "1.0.0",
-  "private": true,
-  "workspaces": [
-    "client",
-    "server"
-  ],
-  "scripts": {
-    "start:client": "cd client && bun run start",
-    "start:server": "cd server && bun run start"
-  }
+	"name": "codraw-monorepo",
+	"version": "1.0.0",
+	"private": true,
+	"workspaces": [
+		"client",
+		"server"
+	],
+	"scripts": {
+		"start:client": "cd client && bun run start",
+		"start:server": "cd server && bun run start",
+		"build": "cd client && npm run build"
+	}
 }
