@@ -1,3 +1,8 @@
+// Polyfill crypto for Node 18 / BSON 7 / Mongoose 9
+const nodeCrypto = require('crypto');
+if (!global.crypto) global.crypto = nodeCrypto.webcrypto || nodeCrypto;
+if (!globalThis.crypto) globalThis.crypto = global.crypto;
+
 // Polyfill for Bun < 1.4 compatibility with Mongoose 9 / BSON 7
 const originalGet = globalThis.process?.getBuiltinModule;
 if (originalGet) {
@@ -95,6 +100,7 @@ app.get('/api/health', (req, res) => {
     mongoStatus: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
     hasMongoUri: Boolean(process.env.MONGODB_URI),
     mongoError: lastMongoError,
+    nodeVersion: process.version,
     timestamp: new Date().toISOString(),
   });
 });
