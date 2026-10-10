@@ -3,6 +3,8 @@
 > **Academic Capstone Project & Technical Specification Documentation**  
 > **Course / Degree:** Bachelor of Technology in Computer Science & Engineering  
 > **Repository:** `codraw-monorepo` | **Engine Target:** React.js (Create React App Architecture)  
+> **Live Frontend:** [https://codraw-live.vercel.app/](https://codraw-live.vercel.app/)  
+> **Live Backend API:** [https://codraw-api.onrender.com](https://codraw-api.onrender.com)  
 > **Runtime Environment:** Bun v1.3+ & Node.js v18+ | **Database:** MongoDB & Dexie.js (IndexedDB)
 
 ---

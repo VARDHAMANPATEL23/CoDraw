@@ -19,23 +19,68 @@ const projectRoutes = require('./routes/projects');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/codraw';
 
 app.use(cors());
 app.use(express.json());
 
-// Connect to MongoDB
-mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 10000 })
-  .then(() => console.log('Connected to MongoDB successfully'))
-  .catch((err) => console.warn('MongoDB connection notice:', err.message));
+let lastMongoError = null;
 
-// Middleware to check database connection for API routes
-app.use((req, res, next) => {
-  if (req.path.startsWith('/api/health')) return next();
+const connectDB = async () => {
+  const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/codraw';
+  try {
+    await mongoose.connect(uri, { serverSelectionTimeoutMS: 8000 });
+    lastMongoError = null;
+    console.log('Connected to MongoDB successfully');
+  } catch (err) {
+    lastMongoError = err.message;
+    console.warn('MongoDB connection notice:', err.message);
+  }
+};
+
+// Initial connection
+connectDB();
+
+// Auto-reconnect interval if connection dropped or delayed
+setInterval(() => {
   if (mongoose.connection.readyState !== 1) {
-    return res.status(503).json({
-      error: 'Database disconnected. Please check your MONGODB_URI in server/.env and verify your IP is whitelisted in MongoDB Atlas Network Access (0.0.0.0/0). Guest Mode works 100% offline in browser.',
-    });
+    connectDB();
+  }
+}, 15000);
+
+// Root informative endpoint
+app.get(['/', '/api'], (req, res) => {
+  res.json({
+    name: 'CoDraw Backend API',
+    status: 'online',
+    version: '1.0.0',
+    database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+    frontend: 'https://codraw-live.vercel.app',
+    endpoints: {
+      health: '/api/health',
+      auth: {
+        login: 'POST /api/auth/login',
+        register: 'POST /api/auth/register',
+        me: 'GET /api/auth/me',
+      },
+      projects: {
+        list: 'GET /api/projects',
+        sync: 'POST /api/projects/sync',
+        delete: 'DELETE /api/projects/:projectId',
+      },
+    },
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// Middleware to check database connection specifically for database-backed routes
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api/auth') || req.path.startsWith('/api/projects')) {
+    if (mongoose.connection.readyState !== 1) {
+      return res.status(503).json({
+        error: 'Database disconnected. Please verify MONGODB_URI in Render and ensure 0.0.0.0/0 is whitelisted in MongoDB Atlas Network Access.',
+        details: lastMongoError,
+      });
+    }
   }
   next();
 });
@@ -48,6 +93,8 @@ app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
     mongoStatus: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+    hasMongoUri: Boolean(process.env.MONGODB_URI),
+    mongoError: lastMongoError,
     timestamp: new Date().toISOString(),
   });
 });

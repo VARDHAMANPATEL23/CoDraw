@@ -1,5 +1,8 @@
 # CoDraw
 
+> 🌐 **Live Application:** [https://codraw-live.vercel.app/](https://codraw-live.vercel.app/)
+> 🔌 **Live Backend API:** [https://codraw-api.onrender.com](https://codraw-api.onrender.com)
+
 CoDraw is a powerful browser-based visual website builder designed to streamline web development. It allows you to drag-and-drop UI components onto a high-performance canvas, visually edit their properties and styles in real-time, and instantly export a clean, production-ready React codebase (supporting JS/TS, Tailwind, CSS Modules, or Bootstrap).
 
 ## ✨ Key Features
