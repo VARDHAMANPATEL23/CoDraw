@@ -13,13 +13,12 @@ export default function RightPanel() {
   const [activeTab, setActiveTab] = useState('layout');
 
   useEffect(() => {
-    if (def && def.styleableElements && def.styleableElements.length > 0) {
-      if (!def.styleableElements.includes(targetElement)) {
-        setTargetElement(def.styleableElements[0]);
+    setTargetElement((prev) => {
+      if (def && def.styleableElements && def.styleableElements.length > 0) {
+        return def.styleableElements.includes(prev) ? prev : def.styleableElements[0];
       }
-    } else {
-      setTargetElement('Wrapper');
-    }
+      return 'Wrapper';
+    });
   }, [effectiveSelectedId, def]);
 
   const handleStyleChange = (property, value) => {
@@ -356,3 +355,4 @@ export default function RightPanel() {
     </aside>
   );
 }
+

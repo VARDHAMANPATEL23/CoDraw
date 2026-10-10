@@ -50,7 +50,7 @@ function EditorView() {
       setLoading(false);
     };
     hydrate();
-  }, [projectId]);
+  }, [projectId, meta.projectId, navigate]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -107,22 +107,22 @@ function EditorView() {
     <DndContext onDragEnd={handleDragEnd}>
       <div className="h-screen w-screen flex flex-col overflow-hidden bg-slate-950">
         <TopBar onBackToDashboard={() => navigate('/')} />
-        
+
         <PanelGroup direction="horizontal" className="flex-1 overflow-hidden">
           <Panel defaultSize={256} minSize={200} maxSize={400}>
             <LeftPanel />
           </Panel>
-          
+
           <PanelResizeHandle className="w-1 bg-slate-800 hover:bg-indigo-500 transition-colors cursor-col-resize" />
-          
+
           <Panel minSize={300}>
             {isSplitView ? (
               <PanelGroup direction="horizontal">
-                <Panel defaultSize="50" minSize="20">
+                <Panel defaultSize={50} minSize={20}>
                   <CanvasArea />
                 </Panel>
                 <PanelResizeHandle className="w-1 bg-slate-700 hover:bg-indigo-500 transition-colors cursor-col-resize" />
-                <Panel defaultSize="50" minSize="20">
+                <Panel defaultSize={50} minSize={20}>
                   <IsolatedCanvasArea />
                 </Panel>
               </PanelGroup>
@@ -130,9 +130,9 @@ function EditorView() {
               <CanvasArea />
             )}
           </Panel>
-          
+
           <PanelResizeHandle className="w-1 bg-slate-800 hover:bg-indigo-500 transition-colors cursor-col-resize" />
-          
+
           <Panel defaultSize={320} minSize={250} maxSize={500}>
             <RightPanel />
           </Panel>
@@ -178,8 +178,6 @@ function DashboardView() {
   );
 }
 
-
-
 function UpdateBanner() {
   const { updateAvailable, serviceWorkerRegistration, clearUpdate } = useAppStore();
 
@@ -196,13 +194,13 @@ function UpdateBanner() {
   return (
     <div className="fixed bottom-4 right-4 bg-indigo-600 text-white px-6 py-4 rounded-lg shadow-2xl flex items-center gap-4 z-[9999] animate-in slide-in-from-bottom-5">
       <div className="text-sm font-medium">A new version of CoDraw is available.</div>
-      <button 
+      <button
         onClick={handleUpdate}
         className="bg-white text-indigo-600 px-3 py-1.5 rounded text-xs font-bold hover:bg-slate-100 transition-colors"
       >
         Reload to Update
       </button>
-      <button 
+      <button
         onClick={clearUpdate}
         className="text-indigo-200 hover:text-white px-2 text-xs"
       >

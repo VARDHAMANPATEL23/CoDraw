@@ -28,6 +28,7 @@ export default function ProjectDashboard({ onOpenProject, onNewProjectClick }) {
 
   useEffect(() => {
     loadProjects();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated, isOnline]);
 
   const handleDelete = async (projectId, e) => {
@@ -199,3 +200,4 @@ export default function ProjectDashboard({ onOpenProject, onNewProjectClick }) {
     </div>
   );
 }
+
