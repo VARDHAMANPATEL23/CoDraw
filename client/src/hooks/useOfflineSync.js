@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { flushSyncQueue, getAllProjectsFromDB, saveProjectToDB } from '../db/projectDB';
 import { useAuthStore } from '../store/useAuthStore';
+import { API_BASE } from '../utils/api';
 
 export function useOfflineSync() {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -36,7 +37,7 @@ export function useOfflineSync() {
     }
 
     try {
-      const res = await fetch('http://localhost:5000/api/projects', {
+      const res = await fetch(`${API_BASE}/projects`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

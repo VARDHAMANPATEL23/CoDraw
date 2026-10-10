@@ -1,4 +1,5 @@
 import Dexie from 'dexie';
+import { API_BASE } from '../utils/api';
 
 export const db = new Dexie('CoDrawDB');
 
@@ -23,7 +24,7 @@ export async function saveProjectToDB(projectJSON) {
     } else {
       // Synchronous background sync attempt
       try {
-        await fetch('http://localhost:5000/api/projects/sync', {
+        await fetch(`${API_BASE}/projects/sync`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -55,7 +56,7 @@ export async function flushSyncQueue() {
   const queuedItems = await db.syncQueue.toArray();
   for (const item of queuedItems) {
     try {
-      const res = await fetch('http://localhost:5000/api/projects/sync', {
+      const res = await fetch(`${API_BASE}/projects/sync`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -90,7 +91,7 @@ export async function deleteProjectFromDB(projectId) {
   const token = localStorage.getItem('codraw_token');
   if (token && navigator.onLine) {
     try {
-      await fetch(`http://localhost:5000/api/projects/${projectId}`, {
+      await fetch(`${API_BASE}/projects/${projectId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });

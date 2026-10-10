@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { db } from '../db/projectDB';
-
-const API_BASE = 'http://localhost:5000/api';
+import { API_BASE } from '../utils/api';
 
 export const useAuthStore = create((set, get) => ({
   user: JSON.parse(localStorage.getItem('codraw_user') || 'null'),
